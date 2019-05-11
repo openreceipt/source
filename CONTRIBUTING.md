@@ -44,7 +44,7 @@ install dependencies using Yarn:
 
 ``` bash
 git clone https://github.com/open-receipt/source.git
-cd api
+cd source
 yarn
 yarn test
 ```
