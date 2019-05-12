@@ -12,3 +12,16 @@ enum Events {
   'RUN_PLUGIN',
 }
 ```
+
+```typescript
+interface Parser {
+  getItems(): Item[];
+  getDate(): string;
+  getId(): string;
+  getSubtotal();
+  getTaxes();
+  getTotal?();
+}
+```
+
+- Switch JSDom for Cheerio
