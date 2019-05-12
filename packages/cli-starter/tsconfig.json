@@ -18,6 +18,7 @@
     { "path": "../plugin-console" },
     { "path": "../plugin-mail" },
     { "path": "../plugin-best-buy-usa" },
+    { "path": "../plugin-just-eat-uk" },
     { "path": "../plugin-steam" },
     { "path": "../plugin-ubereats-uk" },
     { "path": "../plugin-vapeclub-uk" },

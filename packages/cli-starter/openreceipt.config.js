@@ -6,5 +6,6 @@ module.exports = {
     '@openreceipt/plugin-ubereats-uk',
     '@openreceipt/plugin-vapeclub-uk',
     '@openreceipt/plugin-zooplus-uk',
+    '@openreceipt/plugin-just-eat-uk',
   ],
 }
