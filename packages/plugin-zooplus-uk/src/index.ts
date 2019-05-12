@@ -22,10 +22,6 @@ export default class ZooplusUKPlugin extends Plugin {
     };
   };
 
-  getSourceAddresses = (): string[] => {
-    return ['service@zooplus.co.uk'];
-  };
-
   private findValidParser = () => {
     // const sortedParsers =
     // const parserTimestamps = this.parsers.();
