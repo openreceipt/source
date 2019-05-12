@@ -1,4 +1,10 @@
-import { extract, Item, Parser, roundToDecimal } from '@openreceipt/core';
+import {
+  extract,
+  extractAll,
+  Item,
+  Parser,
+  roundToDecimal,
+} from '@openreceipt/core';
 
 import Plugin from './';
 
@@ -6,8 +12,6 @@ export default class ZooPlusV1 extends Parser {
   static readonly meta = {
     since: new Date(2017, 1, 1).getTime(),
   };
-
-  private products: Item[] = [];
 
   private getProductName = (htmlString: string) => {
     const productNameHtmlString = extract(
@@ -54,32 +58,23 @@ export default class ZooPlusV1 extends Parser {
   };
 
   private getProducts = (html: string) => {
-    const start = html.indexOf('<!-- Order block for one product -->');
-    const end = html.indexOf('<!-- End Order block for one product -->', start);
-
-    // Finished
-    if (start === -1 && end === 0) {
-      return;
-    }
-
-    if (start === -1 || end === -1 || start > end) {
-      throw new Error('Something bad has happened');
-    }
-
-    const orderItemHtml = html.slice(start, end);
-    const name = this.getProductName(orderItemHtml);
-    const { amount, currency, quantity } = this.getProductDetails(
-      orderItemHtml,
+    const productsHtmlFragments = extractAll(
+      html,
+      '<!-- Order block for one product -->',
+      '<!-- End Order block for one product -->',
     );
 
-    this.products.push({
-      amount: parseInt(amount.replace('.', ''), 10),
-      currency,
-      description: name,
-      quantity: parseInt(quantity, 10),
-    });
+    return productsHtmlFragments.map((fragment) => {
+      const name = this.getProductName(fragment);
+      const { amount, currency, quantity } = this.getProductDetails(fragment);
 
-    this.getProducts(html.slice(end));
+      return {
+        amount: parseInt(amount.replace('.', ''), 10),
+        currency,
+        description: name,
+        quantity: parseInt(quantity, 10),
+      };
+    });
   };
 
   private getCurrencyAndTotal = (htmlString: string) => {
@@ -147,8 +142,6 @@ export default class ZooPlusV1 extends Parser {
   async parse(): Promise<void> {
     const html = this.engine.state.email.html as string;
 
-    this.getProducts(html);
-
     const { currency, total } = this.getCurrencyAndTotal(html);
 
     const taxAmount = (total - total / 1.2) / 1000;
@@ -163,7 +156,7 @@ export default class ZooPlusV1 extends Parser {
     this.engine.state.receipt = {
       currency,
       date: this.engine.state.email.date || this.getOrderDate(html),
-      items: this.products,
+      items: this.getProducts(html),
       orderId: this.getOrderId(html),
       taxes: [tax],
       total,
