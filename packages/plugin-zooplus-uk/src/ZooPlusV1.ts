@@ -16,12 +16,12 @@ export default class ZooPlusV1 extends Parser {
       '</tr>',
     );
 
-    const productName = this.engine.domParser.parse(
-      productNameHtmlString,
-    ) as any;
-    return productName.window.document
-      .querySelector('span')
-      .textContent.replace(/^\s?-\s?/, '')
+    const $ = this.engine.domParser.parse(productNameHtmlString);
+
+    return $('span')
+      .first()
+      .text()
+      .replace(/^\s?-\s?/, '')
       .replace(/-/g, ' - ')
       .replace(/\s\s/g, ' ');
   };
@@ -38,10 +38,11 @@ export default class ZooPlusV1 extends Parser {
 
     const productDetailsHtmlString = htmlString.slice(start, end);
 
-    const productDetails = this.engine.domParser.parse(
-      productDetailsHtmlString,
-    ) as any;
-    const res = productDetails.window.document.querySelector('p').textContent;
+    const $ = this.engine.domParser.parse(productDetailsHtmlString) as any;
+
+    const res = $('p')
+      .first()
+      .text();
 
     const [, quantity, amount, currency] = res.match(/(\d)+x\s+(.*)\s(\w+)/);
 
@@ -87,17 +88,15 @@ export default class ZooPlusV1 extends Parser {
       '<!-- Grand total block -->',
       '<!-- End Grand total block -->',
     );
-    const orderTotalHtml = this.engine.domParser.parse(orderTotalHtmlString);
+    const $ = this.engine.domParser.parse(orderTotalHtmlString);
 
-    const node = orderTotalHtml.window.document.querySelector(
-      'tr > td[align=right] > p',
-    );
+    const node = $('tr > td[align=right] > p').first();
 
     if (!node) {
       throw new Error('Order total could not be retrieved');
     }
 
-    const [, amount, currency] = (node.textContent as string).match(
+    const [, amount, currency] = (node.text() as string).match(
       /(\d+.\d+)\s(\w+)/,
     ) as any[];
 
@@ -108,19 +107,19 @@ export default class ZooPlusV1 extends Parser {
   };
 
   private getOrderId = (htmlString: string) => {
-    const html = this.engine.domParser.parse(htmlString);
+    const $ = this.engine.domParser.parse(htmlString);
 
-    const nodes = html.window.document.querySelectorAll('b');
+    const node = $('b')
+      .filter((index, el) => {
+        return $(el).text() === 'Order number:';
+      })
+      .first();
 
-    const node = Array.from(nodes).find((element: HTMLElement) => {
-      return element.textContent === 'Order number:';
-    });
-
-    if (!node || !node.parentNode) {
+    if (!node || !node.parent()) {
       throw new Error('Order number could not be retrieved');
     }
 
-    const textContent = node.parentNode.textContent! as string;
+    const textContent = node.parent().text() as string;
 
     const [, orderId] = textContent.match(/(\d+)/) as any;
 
@@ -128,19 +127,17 @@ export default class ZooPlusV1 extends Parser {
   };
 
   private getOrderDate = (htmlString: string) => {
-    const html = this.engine.domParser.parse(htmlString);
+    const $ = this.engine.domParser.parse(htmlString);
 
-    const nodes = html.window.document.querySelectorAll('b');
-
-    const node = Array.from(nodes).find((element: HTMLElement) => {
-      return element.textContent === 'Order date:';
+    const node = $('b').filter((index, el) => {
+      return $(el).text() === 'Order date:';
     });
 
-    if (!node || !node.parentNode) {
+    if (!node || !node.parent()) {
       throw new Error('Order date could not be retrieved');
     }
 
-    const textContent = node.parentNode.textContent! as string;
+    const textContent = node.parent().text() as string;
 
     const [, date] = textContent.match(/(\d+\/\d+\/\d+)/) as any;
 
