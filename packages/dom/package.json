@@ -28,7 +28,7 @@
     "test": "jest --no-cache --coverage"
   },
   "dependencies": {
-    "jsdom": "^15",
+    "cheerio": "^1.0.0-rc.3",
     "mailparser": "^2",
     "make-error": "^1",
     "tslib": "^1"
@@ -36,8 +36,8 @@
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
+    "@types/cheerio": "^0.22.11",
     "@types/jest": "^23",
-    "@types/jsdom": "^12",
     "@types/mailparser": "^2",
     "@types/node": "8.*",
     "jest": "^24",

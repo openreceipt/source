@@ -1,9 +1,9 @@
-import { JSDOM } from 'jsdom';
+import cheerio from 'cheerio';
 
 export default class DomParser {
-  constructor(public driver: typeof JSDOM = JSDOM) {}
+  constructor(public driver: CheerioAPI = cheerio) {}
 
   parse = (htmlString: string) => {
-    return new this.driver(htmlString);
+    return this.driver.load(htmlString);
   };
 }
