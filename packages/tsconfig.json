@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./cli" },
+    { "path": "./cli-starter" },
+    { "path": "./core" },
+    { "path": "./dom" },
+    { "path": "./mail" },
+    { "path": "./plugin-best-buy-usa" },
+    { "path": "./plugin-console" },
+    { "path": "./plugin-mail" },
+    { "path": "./plugin-ubereats-uk]" },
+    { "path": "./plugin-vapeclub-uk" },
+    { "path": "./plugin-zooplus-uk" }
+  ]
+}

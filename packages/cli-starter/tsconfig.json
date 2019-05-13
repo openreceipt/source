@@ -1,29 +1,25 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "importHelpers": true,
-    "lib": [
-      "dom",
-      "es2015",
-      "esnext.asynciterable"
-    ],
-    "module": "commonjs",
     "outDir": "./dist",
-    "resolveJsonModule": true,
-    "rootDir": "./src",
-    "sourceMap": true,
-    "strict": true,
-    "target": "es5"
+    "rootDir": "./src"
   },
   "include": [
-    "src/**/*.ts"
+    "src"
   ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
     "**/*.integ.ts",
     "**/__fixtures__/*.*"
+  ],
+  "references": [
+    { "path": "../cli" },
+    { "path": "../plugin-console" },
+    { "path": "../plugin-mail" },
+    { "path": "../plugin-best-buy-usa" },
+    { "path": "../plugin-ubereats-uk" },
+    { "path": "../plugin-vapeclub-uk" },
+    { "path": "../plugin-zooplus-uk" }
   ]
 }

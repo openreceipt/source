@@ -35,6 +35,7 @@
     "@openreceipt/core": "^0.0.1",
     "@openreceipt/dom": "^0.0.1",
     "@openreceipt/mail": "^0.0.1",
+    "@openreceipt/plugin-mail": "^0.0.1",
     "tslib": "^1"
   },
   "devDependencies": {

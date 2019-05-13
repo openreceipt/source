@@ -31,7 +31,6 @@
     "@endemolshinegroup/cosmiconfig-typescript-loader": "^1",
     "@openreceipt/dom": "^0.0.1",
     "@openreceipt/mail": "^0.0.1",
-    "@openreceipt/plugin-mail": "^0.0.1",
     "@types/debug": "^4.1.4",
     "cosmiconfig": "^5",
     "debug": "^4.1.1",

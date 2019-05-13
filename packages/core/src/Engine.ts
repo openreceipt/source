@@ -98,16 +98,20 @@ export default class Engine {
       async (loadedPlugins, pluginName) => {
         debug(`Loading plugin ${pluginName}...`);
 
-        const pluginClassImport = await import(pluginName);
-        const PluginClass = pluginClassImport.default;
-        const pluginInstance = new PluginClass(this);
+        try {
+          const pluginClassImport = await import(pluginName);
+          const PluginClass = pluginClassImport.default;
+          const pluginInstance = new PluginClass(this);
 
-        this.loadPluginHooks(pluginInstance);
+          this.loadPluginHooks(pluginInstance);
 
-        return {
-          ...loadedPlugins,
-          [pluginName]: pluginInstance,
-        };
+          return {
+            ...loadedPlugins,
+            [pluginName]: pluginInstance,
+          };
+        } catch (error) {
+          throw new FatalError(`Could not load ${pluginName} plugin`);
+        }
       },
       {},
     );

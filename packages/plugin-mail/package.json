@@ -27,6 +27,9 @@
     "pretest": "rimraf coverage/",
     "test": "jest --no-cache --coverage"
   },
+  "peerDependencies": {
+    "@openreceipt/core": "^0.0.1"
+  },
   "dependencies": {
     "mailparser": "^2",
     "make-error": "^1",
@@ -35,6 +38,7 @@
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
+    "@openreceipt/core": "^0.0.1",
     "@types/jest": "^23",
     "@types/mailparser": "^2",
     "@types/node": "8.*",

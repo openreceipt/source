@@ -22,9 +22,7 @@
     "build": "rimraf dist/ && tsc",
     "lint": "yarn workspaces run lint",
     "test": "CI=true yarn workspaces run test",
-    "semantic-release": "semantic-release",
-    "postinstall": "chmod +x scripts/build.sh && scripts/build.sh",
-    "helpers": "node packages/scripts/dist/index.js"
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "tslib": "^1"
