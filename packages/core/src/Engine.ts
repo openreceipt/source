@@ -94,27 +94,34 @@ export default class Engine {
   protected loadPlugins = async () => {
     const pluginsToLoad = ['@openreceipt/plugin-mail', ...this.config.plugins];
 
-    this.loadedPlugins = pluginsToLoad.reduce(
-      async (loadedPlugins, pluginName) => {
-        debug(`Loading plugin ${pluginName}...`);
+    const pluginLoadPromises = pluginsToLoad.map(async (pluginName) => {
+      debug(`Loading plugin ${pluginName}...`);
 
-        try {
-          const pluginClassImport = await import(pluginName);
-          const PluginClass = pluginClassImport.default;
-          const pluginInstance = new PluginClass(this);
+      try {
+        const pluginClassImport = await import(pluginName);
+        const PluginClass = pluginClassImport.default;
+        const pluginInstance = new PluginClass(this);
 
-          this.loadPluginHooks(pluginInstance);
+        this.loadPluginHooks(pluginInstance);
 
-          return {
-            ...loadedPlugins,
-            [pluginName]: pluginInstance,
-          };
-        } catch (error) {
-          throw new FatalError(`Could not load ${pluginName} plugin`);
-        }
-      },
-      {},
-    );
+        return {
+          [pluginName]: pluginInstance,
+        };
+      } catch (error) {
+        throw new FatalError(`Could not load ${pluginName} plugin`);
+      }
+    });
+
+    const results = await Promise.all(pluginLoadPromises);
+
+    this.loadedPlugins = results.reduce((result, pluginKeyValuePair) => {
+      return {
+        ...result,
+        ...pluginKeyValuePair,
+      };
+    }, {});
+
+    return Promise.resolve();
   };
 
   protected runHooks = async (hookName: Events) => {
