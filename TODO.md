@@ -1,7 +1,8 @@
 # TODO
 
-Implement a plugin system similar to Serverless'
-i.e. with `before` and `after` hooks but without any commands
+---
+
+Create an `events` package for handling events in the engine i.e. with `before` and `after` hooks but without any commands
 
 ```typescript
 enum Events {
@@ -12,6 +13,10 @@ enum Events {
   'RUN_PLUGIN',
 }
 ```
+
+---
+
+Make specific methods on Parser
 
 ```typescript
 interface Parser {
@@ -24,4 +29,6 @@ interface Parser {
 }
 ```
 
-- Switch JSDom for Cheerio
+---
+
+Improve documentation
