@@ -1,4 +1,5 @@
 import createDebug from 'debug';
+
 import { HookCallback, HooksMap } from './types';
 
 const debug = createDebug('openreceipt:events');

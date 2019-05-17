@@ -4,9 +4,10 @@ import createDebug from 'debug';
 
 import Explorer from './Config/Explorer';
 import FatalError from './Errors/FatalError';
+import EventManager from './EventManager';
 import Logger from './Logger';
 import Plugin from './Plugin';
-import { Config, HooksMap } from './Types/Engine';
+import { Config } from './Types/Engine';
 import { Events } from './Types/Events';
 import { Receipt } from './Types/types';
 
@@ -38,26 +39,27 @@ export default class Engine {
    */
   loadedPlugins: Record<string, Plugin> = {};
 
-  hooks = [
-    Events.BOOT_CONFIG,
-    Events.BOOT_PLUGINS,
-    Events.EXEC_MAIL_PARSE,
-    Events.AFTER_EXEC_MAIL_PARSE,
-    Events.EXEC_RECEIPT_PARSE,
-    Events.AFTER_EXEC_RECEIPT_PARSE,
-  ];
-
-  hooksMap: HooksMap = this.hooks.reduce((result, hookName) => {
-    return {
-      ...result,
-      [hookName]: [],
-    };
-  }, {});
+  // hooks = [
+  //   Events.BOOT_CONFIG,
+  //   Events.BOOT_PLUGINS,
+  //   Events.EXEC_MAIL_PARSE,
+  //   Events.AFTER_EXEC_MAIL_PARSE,
+  //   Events.EXEC_RECEIPT_PARSE,
+  //   Events.AFTER_EXEC_RECEIPT_PARSE,
+  // ];
+  //
+  // hooksMap: HooksMap = this.hooks.reduce((result, hookName) => {
+  //   return {
+  //     ...result,
+  //     [hookName]: [],
+  //   };
+  // }, {});
 
   constructor(
     protected configLoader = new Explorer(),
     public readonly log = new Logger(),
     public readonly domParser = new DomParser(),
+    public readonly events = new EventManager(),
     public readonly mailParser = new MailParser(),
   ) {}
 
@@ -80,14 +82,11 @@ export default class Engine {
     const pluginHooks = plugin.setupHooks();
 
     Object.keys(pluginHooks).forEach((hookName: string) => {
-      if (!this.hooksMap[hookName]) {
+      if (!this.events.events[hookName]) {
         throw new FatalError(`Hook ${hookName} is not a known hook`);
       }
 
-      this.hooksMap[hookName] = [
-        ...this.hooksMap[hookName],
-        ...pluginHooks[hookName],
-      ];
+      this.events.addListeners(hookName, pluginHooks[hookName]);
     });
   };
 
@@ -124,30 +123,19 @@ export default class Engine {
     return Promise.resolve();
   };
 
-  protected runHooks = async (hookName: Events) => {
-    const hooks = this.hooksMap[hookName];
-
-    const hooksAsPromises = hooks.map((hook) => {
-      return hook();
-    });
-
-    debug(`Running hooks for ${hookName}...`);
-    await Promise.all(hooksAsPromises);
-  };
-
   protected execute = async () => {
     // console.log(this.hooksMap);
 
-    await this.runHooks(Events.EXEC_MAIL_PARSE);
+    await this.events.fireEvent(Events.EXEC_MAIL_PARSE);
 
     const sourceAddress: string = this.state.email.from.text;
-    this.log.info(`Email received from: ${sourceAddress}`);
+    debug(`Email received from: ${sourceAddress}`);
 
-    await this.runHooks(Events.AFTER_EXEC_MAIL_PARSE);
+    // await this.runHooks(Events.AFTER_EXEC_MAIL_PARSE);
 
-    await this.runHooks(Events.EXEC_RECEIPT_PARSE);
+    await this.events.fireEvent(Events.EXEC_RECEIPT_PARSE);
 
-    await this.runHooks(Events.AFTER_EXEC_RECEIPT_PARSE);
+    // await this.runHooks(Events.AFTER_EXEC_RECEIPT_PARSE);
   };
 
   static run = async (emailSource: string) => {

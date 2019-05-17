@@ -15,6 +15,7 @@
   ],
   "references": [
     { "path": "../dom" },
+    { "path": "../events" },
     { "path": "../mail" }
   ]
 }

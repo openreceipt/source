@@ -1,5 +1,6 @@
+import { HookCallback } from '@openreceipt/events';
+
 import Engine from './Engine';
-import { HookCallback } from './Types/Engine';
 import { Meta } from './Types/types';
 
 export interface PluginInterface {
