@@ -35,7 +35,7 @@
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
-    "@types/jest": "^23",
+    "@types/jest": "^24",
     "@types/mailparser": "^2",
     "@types/node": "8.*",
     "jest": "^24",

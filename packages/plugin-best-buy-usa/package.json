@@ -31,16 +31,13 @@
     "@openreceipt/core": "^0.0.1"
   },
   "dependencies": {
-    "make-error": "^1",
     "tslib": "^1"
   },
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
     "@openreceipt/core": "^0.0.1",
-    "@openreceipt/dom": "^0.0.1",
-    "@openreceipt/mail": "^0.0.1",
-    "@types/jest": "^23",
+    "@types/jest": "^24",
     "@types/node": "8.*",
     "jest": "^24",
     "lint-staged": "^7",

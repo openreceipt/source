@@ -32,14 +32,13 @@
   },
   "dependencies": {
     "mailparser": "^2",
-    "make-error": "^1",
     "tslib": "^1"
   },
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
     "@openreceipt/core": "^0.0.1",
-    "@types/jest": "^23",
+    "@types/jest": "^24",
     "@types/mailparser": "^2",
     "@types/node": "8.*",
     "jest": "^24",
