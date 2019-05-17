@@ -21,7 +21,7 @@ Parse receipt information from your emails!
 ## Prerequisites
 
 
-[icon-ci]: https://img.shields.io/badge/tested_with-jest-99424f.svg?longCache=true&style=flat-square
+[icon-ci]: https://img.shields.io/travis/com/openreceipt/source/master.svg?style=flat-square
 [link-ci]: https://console.aws.amazon.com/codesuite/codebuild/projects/masterchef-recipe-bank/history?region=us-east-1
 
 [icon-jest]: https://img.shields.io/badge/tested_with-jest-99424f.svg?longCache=true&style=flat-square
