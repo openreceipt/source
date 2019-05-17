@@ -29,7 +29,7 @@
     "precommit": "lint-staged",
     "lint": "tslint -p tsconfig.json -t codeFrame 'src/**/*.ts' -e 'src/**/*.spec.ts'",
     "pretest": "rimraf coverage/",
-    "test": "jest --no-cache --coverage"
+    "test": "echo 'No tests for this package'"
   },
   "dependencies": {
     "@openreceipt/core": "^0.0.1",

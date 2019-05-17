@@ -39,12 +39,12 @@ jobs:
       after_success:
         - yarn global add codecov
         - codecov
-    - stage: release
-      if: branch = master AND type != pull_request
-      after_success:
-        - yarn semantic-release
-        - git clone https://${GH_TOKEN}@github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
-        - cd $TRAVIS_REPO_SLUG
-        - git fetch --all
-        - git merge origin/master
-        - git push
+#    - stage: release
+#      if: branch = master AND type != pull_request
+#      after_success:
+#        - yarn semantic-release
+#        - git clone https://${GH_TOKEN}@github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
+#        - cd $TRAVIS_REPO_SLUG
+#        - git fetch --all
+#        - git merge origin/master
+#        - git push
