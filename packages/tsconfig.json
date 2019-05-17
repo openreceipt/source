@@ -5,6 +5,7 @@
     { "path": "./cli-starter" },
     { "path": "./core" },
     { "path": "./dom" },
+    { "path": "./events" },
     { "path": "./mail" },
     { "path": "./plugin-best-buy-usa" },
     { "path": "./plugin-console" },
