@@ -49,7 +49,7 @@
     "@types/lodash.has": "^4",
     "@types/node": "8.*",
     "jest": "^24",
-    "lint-staged": "^7",
+    "lint-staged": "^8",
     "prettier": "^1",
     "rimraf": "^2",
     "ts-jest": "^24",
