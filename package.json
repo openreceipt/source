@@ -36,7 +36,7 @@
     "commitizen": "^3",
     "husky": "^2",
     "lerna": "^3",
-    "lint-staged": "^7",
+    "lint-staged": "^8",
     "semantic-release": "^15"
   },
   "workspaces": {
