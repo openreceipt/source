@@ -39,22 +39,6 @@ export default class Engine {
    */
   loadedPlugins: Record<string, Plugin> = {};
 
-  // hooks = [
-  //   Events.BOOT_CONFIG,
-  //   Events.BOOT_PLUGINS,
-  //   Events.EXEC_MAIL_PARSE,
-  //   Events.AFTER_EXEC_MAIL_PARSE,
-  //   Events.EXEC_RECEIPT_PARSE,
-  //   Events.AFTER_EXEC_RECEIPT_PARSE,
-  // ];
-  //
-  // hooksMap: HooksMap = this.hooks.reduce((result, hookName) => {
-  //   return {
-  //     ...result,
-  //     [hookName]: [],
-  //   };
-  // }, {});
-
   constructor(
     protected configLoader = new Explorer(),
     public readonly log = new Logger(),
@@ -124,18 +108,12 @@ export default class Engine {
   };
 
   protected execute = async () => {
-    // console.log(this.hooksMap);
-
     await this.events.fireEvent(Events.EXEC_MAIL_PARSE);
 
     const sourceAddress: string = this.state.email.from.text;
     debug(`Email received from: ${sourceAddress}`);
 
-    // await this.runHooks(Events.AFTER_EXEC_MAIL_PARSE);
-
     await this.events.fireEvent(Events.EXEC_RECEIPT_PARSE);
-
-    // await this.runHooks(Events.AFTER_EXEC_RECEIPT_PARSE);
   };
 
   static run = async (emailSource: string) => {
