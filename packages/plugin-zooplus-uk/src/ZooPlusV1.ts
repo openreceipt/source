@@ -8,7 +8,7 @@ const formatCurrency = (price: string) => {
 
 export default class ZooPlusV1 extends Parser {
   static readonly meta = {
-    since: new Date(2017, 1, 1).getTime(),
+    since: 1556733381000,
   };
 
   private getProductName = (htmlString: string) => {
@@ -151,6 +151,7 @@ export default class ZooPlusV1 extends Parser {
       currency: Merchant.currency,
       date: this.engine.state.email.date || this.getOrderDate(html),
       items: this.getProducts(html),
+      merchant: Merchant,
       orderId: this.getOrderId(html),
       taxes: [tax],
       total,
