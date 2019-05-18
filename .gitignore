@@ -36,6 +36,7 @@ compiled
 
 # Outputs
 dist
+*.tsbuildinfo
 
 # Dependency directories
 node_modules
