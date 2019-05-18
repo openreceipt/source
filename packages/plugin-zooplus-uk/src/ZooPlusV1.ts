@@ -1,12 +1,10 @@
-import {
-  extract,
-  extractAll,
-  Item,
-  Parser,
-  roundToDecimal,
-} from '@openreceipt/core';
+import { Parser, Util } from '@openreceipt/core';
 
-import Plugin from './';
+import Merchant from './Merchant';
+
+const formatCurrency = (price: string) => {
+  return Util.formatCurrency(Merchant.currency, price);
+};
 
 export default class ZooPlusV1 extends Parser {
   static readonly meta = {
@@ -14,7 +12,7 @@ export default class ZooPlusV1 extends Parser {
   };
 
   private getProductName = (htmlString: string) => {
-    const productNameHtmlString = extract(
+    const productNameHtmlString = Util.extract(
       htmlString,
       '<!-- Product name -->',
       '</tr>',
@@ -48,17 +46,16 @@ export default class ZooPlusV1 extends Parser {
       .first()
       .text();
 
-    const [, quantity, amount, currency] = res.match(/(\d)+x\s+(.*)\s(\w+)/);
+    const [, quantity, amount] = res.match(/(\d)+x\s+(.*)\s(\w+)/);
 
     return {
-      amount,
-      currency,
+      amount: formatCurrency(amount),
       quantity,
     };
   };
 
   private getProducts = (html: string) => {
-    const productsHtmlFragments = extractAll(
+    const productsHtmlFragments = Util.extractAll(
       html,
       '<!-- Order block for one product -->',
       '<!-- End Order block for one product -->',
@@ -66,19 +63,19 @@ export default class ZooPlusV1 extends Parser {
 
     return productsHtmlFragments.map((fragment) => {
       const name = this.getProductName(fragment);
-      const { amount, currency, quantity } = this.getProductDetails(fragment);
+      const { amount, quantity } = this.getProductDetails(fragment);
 
       return {
-        amount: parseInt(amount.replace('.', ''), 10),
-        currency,
+        amount,
+        currency: Merchant.currency,
         description: name,
         quantity: parseInt(quantity, 10),
       };
     });
   };
 
-  private getCurrencyAndTotal = (htmlString: string) => {
-    const orderTotalHtmlString = extract(
+  private getTotal = (htmlString: string) => {
+    const orderTotalHtmlString = Util.extract(
       htmlString,
       '<!-- Grand total block -->',
       '<!-- End Grand total block -->',
@@ -91,14 +88,11 @@ export default class ZooPlusV1 extends Parser {
       throw new Error('Order total could not be retrieved');
     }
 
-    const [, amount, currency] = (node.text() as string).match(
+    const [, amount] = (node.text() as string).match(
       /(\d+.\d+)\s(\w+)/,
     ) as any[];
 
-    return {
-      currency,
-      total: parseInt(amount.replace('.', ''), 10),
-    };
+    return formatCurrency(amount);
   };
 
   private getOrderId = (htmlString: string) => {
@@ -142,19 +136,19 @@ export default class ZooPlusV1 extends Parser {
   async parse(): Promise<void> {
     const html = this.engine.state.email.html as string;
 
-    const { currency, total } = this.getCurrencyAndTotal(html);
+    const total = this.getTotal(html);
 
     const taxAmount = (total - total / 1.2) / 1000;
 
     const tax = {
-      amount: roundToDecimal(taxAmount, 3) * 1000,
-      currency,
+      amount: Util.roundToDecimal(taxAmount, 3) * 1000,
+      currency: Merchant.currency,
       description: 'VAT',
-      taxNumber: Plugin.meta.merchant!.taxNumber,
+      taxNumber: Merchant.taxNumber,
     };
 
     this.engine.state.receipt = {
-      currency,
+      currency: Merchant.currency,
       date: this.engine.state.email.date || this.getOrderDate(html),
       items: this.getProducts(html),
       orderId: this.getOrderId(html),

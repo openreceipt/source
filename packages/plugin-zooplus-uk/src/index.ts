@@ -1,16 +1,11 @@
 import { Events, Meta, Plugin } from '@openreceipt/core';
 
+import Merchant from './Merchant';
 import ZooPlusV1 from './ZooPlusV1';
 
 export default class ZooplusUKPlugin extends Plugin {
   static readonly meta: Meta = {
-    merchant: {
-      email: 'service@zooplus.co.uk',
-      name: 'Zooplus',
-      online: true,
-      phone: '+441234430366',
-      taxNumber: 'GB922901342',
-    },
+    merchant: Merchant,
     sourceAddresses: ['service@zooplus.co.uk'],
   };
 
