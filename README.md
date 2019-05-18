@@ -20,6 +20,14 @@ Parse receipt information from your emails!
 
 ## Prerequisites
 
+## Built with
+
+This project would not exist without:
+
+- `yargs`
+- `cheerio`
+- `mailParser`
+- `currency-formatter`
 
 [icon-ci]: https://img.shields.io/travis/com/openreceipt/source/master.svg?style=flat-square
 [link-ci]: https://travis-ci.com/openreceipt/source
