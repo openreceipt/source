@@ -30,3 +30,11 @@
 -----------------now you have to find markers, extract text from between them, convert to dom (and back to strings!) when appropriate in order to reduce the html to the data that we need----------------
 
 -----------------now examine nodes for unique properties and build the parser around them--------------------------------
+
+## FAQ
+
+### I keep getting build errors, what do I do?
+
+Sometimes the composite builds seem to get cached and don't work correctly, 
+the easiest way to fix this is to go to the project root and run 
+`yarn cleanup`. 
