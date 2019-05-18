@@ -1,10 +1,10 @@
-import { Events, Meta, Plugin } from '@openreceipt/core';
+import { Events, Plugin } from '@openreceipt/core';
 
 import BestBuyV1 from './BestBuyV1';
 import Merchant from './Merchant';
 
 export default class BestBuyPlugin extends Plugin {
-  static readonly meta: Meta = {
+  static readonly meta = {
     merchant: Merchant,
     sourceAddresses: ['Best Buy <BestBuyInfo@emailinfo.bestbuy.com>'],
   };

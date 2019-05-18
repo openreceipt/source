@@ -30,9 +30,3 @@ export interface Receipt {
   payments?: Payment[];
   merchant?: Merchant;
 }
-
-export interface Meta {
-  since?: number;
-  merchant?: Merchant;
-  sourceAddresses?: string[];
-}

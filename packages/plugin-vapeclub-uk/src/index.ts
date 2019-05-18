@@ -1,10 +1,10 @@
-import { Events, Meta, Plugin } from '@openreceipt/core';
+import { Events, Plugin } from '@openreceipt/core';
 
 import Merchant from './Merchant';
 import VapeClubV1 from './VapeClubV1';
 
 export default class VapeClubUKPlugin extends Plugin {
-  static readonly meta: Meta = {
+  static readonly meta = {
     merchant: Merchant,
     sourceAddresses: ['info@vapeclub.co.uk'],
   };
