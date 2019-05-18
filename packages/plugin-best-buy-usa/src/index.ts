@@ -31,7 +31,7 @@ export default class BestBuyPlugin extends Plugin {
     }
 
     // @TODO Resolve correct parser using `sentAt`
-    const parser = new this.parsers[0](this.engine);
+    const parser = new this.parsers[0](this.engine, Merchant);
     await parser.parse();
   };
 }

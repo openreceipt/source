@@ -1,23 +1,25 @@
 import { Parser, Util } from '@openreceipt/core';
 
-import Merchant from './Merchant';
-
-const formatCurrency = (price: string) => {
-  return Util.formatCurrency(Merchant.currency, price);
-};
-
 export default class VapeClubV1 extends Parser {
   static readonly meta = {
     since: 1556790017000,
+    sourceAddress: 'info@vapeclub.co.uk',
   };
 
   private $!: CheerioStatic;
 
-  private getProductName = (productNode: CheerioElement) => {
-    const nameNode = this.$(productNode)
+  private formatCurrency = (price: string) => {
+    return Util.formatCurrency(this.merchant.currency, price);
+  };
+
+  private getItemName = (itemNode: CheerioElement) => {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+
+    const nameNode = $(itemNode)
       .find('a > h2')
       .first();
-    const detailNode = this.$(productNode)
+    const detailNode = $(itemNode)
       .find('a + p')
       .first();
 
@@ -28,8 +30,10 @@ export default class VapeClubV1 extends Parser {
     return `${nameNode.text().trim()} - ${detailNode.text().trim()}`;
   };
 
-  private getProductDetails = (productNode: CheerioElement) => {
-    const detailsNode = this.$(productNode)
+  private getItemDetails = (itemNode: CheerioElement) => {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+    const detailsNode = $(itemNode)
       .find('a + p + p')
       .first();
 
@@ -45,72 +49,23 @@ export default class VapeClubV1 extends Parser {
     const [, amount] = amountString.match(/\(Total:\s(.*)\)/) as any;
 
     return {
-      amount: formatCurrency(amount),
-      currency: Merchant.currency,
+      amount: this.formatCurrency(amount),
+      currency: this.merchant.currency,
       quantity: parseInt(quantity, 10),
     };
   };
 
-  private getProduct = (productNode: CheerioElement) => {
+  private getItem = (itemNode: CheerioElement) => {
     return {
-      description: this.getProductName(productNode),
-      ...this.getProductDetails(productNode),
+      description: this.getItemName(itemNode),
+      ...this.getItemDetails(itemNode),
     };
   };
 
-  private getProducts = () => {
-    const nodes = this.$('tr > td[width="75%"]');
-
-    return Array.from(nodes).map(this.getProduct);
-  };
-
-  private getCurrencyAndTotal = () => {
-    const orderTotalLabelNode = this.$('tr > td[width="80%"]');
-
-    if (!orderTotalLabelNode) {
-      throw new Error('Order total could not be retrieved');
-    }
-
-    const orderTotalValueNode = orderTotalLabelNode
-      .find('.colStyle1 + .colStyle2')
-      .first();
-
-    if (!orderTotalValueNode) {
-      throw new Error('Order total could not be retrieved');
-    }
-
-    const amount = orderTotalValueNode.text().trim();
-
-    return {
-      currency: Merchant.currency,
-      total: formatCurrency(amount),
-    };
-  };
-
-  private getOrderId = () => {
-    const orderIdLabelNode = this.$('td')
-      .filter((index, el) => {
-        return this.$(el)
-          .text()
-          .startsWith('Order Number:');
-      })
-      .first();
-
-    if (!orderIdLabelNode) {
-      throw new Error('Order number could not be retrieved');
-    }
-
-    const orderIdValueNode = orderIdLabelNode.next();
-
-    if (!orderIdValueNode) {
-      throw new Error('Order number could not be retrieved');
-    }
-
-    return orderIdValueNode.text() as string;
-  };
-
-  private getOrderDate = () => {
-    const orderDateLabelNode = this.$('td')
+  getDate() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+    const orderDateLabelNode = $('td')
       .filter((index, el) => {
         return this.$(el)
           .text()
@@ -131,32 +86,75 @@ export default class VapeClubV1 extends Parser {
     const [, , day, month, year] = orderDateValueNode
       .text()
       .match(/((\d+)\/(\d+)\/(\d+))/) as any;
-    return new Date(`${year}/${month}/${day}`);
-  };
+    return new Date(`${year}-${month}-${day}`);
+  }
 
-  async parse(): Promise<void> {
-    const htmlString = this.engine.state.email.html as string;
-    this.$ = this.engine.domParser.parse(htmlString);
+  getId() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+    const orderIdLabelNode = $('td')
+      .filter((index, el) => {
+        return $(el)
+          .text()
+          .startsWith('Order Number:');
+      })
+      .first();
 
-    const { currency, total } = this.getCurrencyAndTotal();
+    if (!orderIdLabelNode) {
+      throw new Error('Order number could not be retrieved');
+    }
+
+    const orderIdValueNode = orderIdLabelNode.next();
+
+    if (!orderIdValueNode) {
+      throw new Error('Order number could not be retrieved');
+    }
+
+    return orderIdValueNode.text() as string;
+  }
+
+  getItems() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+    const nodes = $('tr > td[width="75%"]');
+
+    return Array.from(nodes).map(this.getItem);
+  }
+
+  getTaxes() {
+    const total = this.getTotal();
 
     const taxAmount = (total - total / 1.2) / 1000;
 
     const tax = {
       amount: Util.roundToDecimal(taxAmount, 3) * 1000,
-      currency,
+      currency: this.merchant.currency,
       description: 'VAT',
-      taxNumber: Merchant.taxNumber,
+      taxNumber: this.merchant.taxNumber,
     };
 
-    this.engine.state.receipt = {
-      currency,
-      date: this.engine.state.email.date || this.getOrderDate(),
-      items: this.getProducts(),
-      merchant: Merchant,
-      orderId: this.getOrderId(),
-      taxes: [tax],
-      total,
-    };
+    return [tax];
+  }
+
+  getTotal() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+    const orderTotalLabelNode = $('tr > td[width="80%"]');
+
+    if (!orderTotalLabelNode) {
+      throw new Error('Order total could not be retrieved');
+    }
+
+    const orderTotalValueNode = orderTotalLabelNode
+      .find('.colStyle1 + .colStyle2')
+      .first();
+
+    if (!orderTotalValueNode) {
+      throw new Error('Order total could not be retrieved');
+    }
+
+    const amount = orderTotalValueNode.text().trim();
+
+    return this.formatCurrency(amount);
   }
 }

@@ -1,57 +1,50 @@
-import { Parser, Receipt, Util } from '@openreceipt/core';
-
-import Merchant from './Merchant';
-
-const formatCurrency = (price: string) => {
-  return Util.formatCurrency(Merchant.currency, price);
-};
+import { Parser, Util } from '@openreceipt/core';
 
 export default class BestBuyV1 extends Parser {
   static readonly meta = {
     since: new Date(2017, 1, 1).getTime(),
+    sourceAddress: 'Best Buy <BestBuyInfo@emailinfo.bestbuy.com>',
   };
 
-  private getProductName = (
-    $: CheerioStatic,
-    productElement: CheerioElement,
-  ) => {
-    const productNameNode = $(productElement)
+  private formatCurrency = (price: string) => {
+    return Util.formatCurrency(this.merchant.currency, price);
+  };
+
+  private getItemName = ($: CheerioStatic, itemNode: CheerioElement) => {
+    const itemNameNode = $(itemNode)
       .find('a[target=_blank]')
       .first();
 
-    if (!productNameNode) {
+    if (!itemNameNode) {
       throw new Error('Could not retrieve product name');
     }
 
-    return productNameNode.text().replace(/\s{2}/g, ' - ');
+    return itemNameNode.text().replace(/\s{2}/g, ' - ');
   };
 
-  private getProductDetails = (
-    $: CheerioStatic,
-    productElement: CheerioElement,
-  ) => {
-    const productDetailsNode = $(productElement)
+  private getItemDetails = ($: CheerioStatic, itemNode: CheerioElement) => {
+    const itemDetailsNode = $(itemNode)
       .find('td.lineItem-details[width="123"]')
       .first();
 
-    if (!productDetailsNode) {
+    if (!itemDetailsNode) {
       throw new Error('Could not retrieve product details');
     }
 
-    const quantityLabelNode = productDetailsNode.find('td[width="40"]').first();
+    const quantityLabelNode = itemDetailsNode.find('td[width="40"]').first();
 
     if (!quantityLabelNode) {
       throw new Error('Could not retrieve product quantity');
     }
 
-    const valueNodes = $(productDetailsNode).find('tr:last-child > td');
+    const valueNodes = $(itemDetailsNode).find('tr:last-child > td');
 
     const quantity = parseInt(
       $(valueNodes.get(quantityLabelNode.index())).text(),
       10,
     );
 
-    const priceLabelNode = $(productDetailsNode)
+    const priceLabelNode = $(itemDetailsNode)
       .find('td[width="83"]')
       .first();
 
@@ -62,35 +55,20 @@ export default class BestBuyV1 extends Parser {
     const price = $(valueNodes.get(priceLabelNode.index())).text();
 
     return {
-      amount: formatCurrency(price),
-      currency: Merchant.currency,
+      amount: this.formatCurrency(price),
+      currency: this.merchant.currency,
       quantity,
     };
   };
 
-  private getProduct = ($: CheerioStatic, productElement: CheerioElement) => {
+  private getItem = ($: CheerioStatic, itemNode: CheerioElement) => {
     return {
-      description: this.getProductName($, productElement),
-      ...this.getProductDetails($, productElement),
+      description: this.getItemName($, itemNode),
+      ...this.getItemDetails($, itemNode),
     };
   };
 
-  private getProducts = (html: string) => {
-    const productsHtmlString = Util.extract(
-      html,
-      '<!-- ORDER DETAILS -->',
-      '<!-- END - ORDER DETAILS -->',
-    );
-    const $ = this.engine.domParser.parse(productsHtmlString);
-
-    const nodes = $('.lineItem-meta');
-
-    return Array.from(nodes).map((node) => {
-      return this.getProduct($, node);
-    });
-  };
-
-  private getOrderSummaryItem = (
+  private getOrderSummaryItemAmount = (
     $: CheerioStatic,
     nodes: Cheerio,
     searchString: string,
@@ -114,64 +92,15 @@ export default class BestBuyV1 extends Parser {
         .text()
         .trim() === 'FREE'
     ) {
-      return {
-        amount: 0,
-        currency: 'USD',
-      };
+      return 0;
     }
 
-    return {
-      amount: formatCurrency(summaryItemLabelNode.next().text()),
-      currency: Merchant.currency,
-    };
+    return this.formatCurrency(summaryItemLabelNode.next().text());
   };
 
-  private getOrderSummary = (htmlString: string) => {
-    const $ = this.engine.domParser.parse(htmlString);
-
-    const nodes = $('td[width="140"]');
-
-    const subtotal = this.getOrderSummaryItem($, nodes, 'Subtotal:');
-    const tax = this.getOrderSummaryItem($, nodes, 'Tax:');
-    const total = this.getOrderSummaryItem($, nodes, 'ORDER TOTAL:');
-
-    return {
-      currency: subtotal.currency,
-      taxAmount: tax.amount,
-      total: total.amount,
-    };
-  };
-
-  private getOrderId = (htmlString: string) => {
+  getDate() {
     const orderIdHtmlString = Util.extract(
-      htmlString,
-      '<!-- BEGIN - MAIN MESSAGE -->',
-      '<!-- END - MAIN MESSAGE -->',
-    );
-
-    const $ = this.engine.domParser.parse(orderIdHtmlString);
-
-    const node = $('span')
-      .filter((index, el) => {
-        return $(el)
-          .text()
-          .trim()
-          .startsWith('ORDER #');
-      })
-      .first();
-
-    if (!node) {
-      throw new Error('Order number could not be retrieved');
-    }
-
-    const [, orderId] = node.text().match(/ORDER\s#(.*)/) as any;
-
-    return orderId;
-  };
-
-  private getOrderDate = (htmlString: string) => {
-    const orderIdHtmlString = Util.extract(
-      htmlString,
+      this.engine.state.email.html as string,
       '<!-- BEGIN - MAIN MESSAGE -->',
       '<!-- END - MAIN MESSAGE -->',
     );
@@ -197,26 +126,72 @@ export default class BestBuyV1 extends Parser {
     const [month, day, year] = orderDateString.trim().match(/(\d{2})/g) as any;
 
     return new Date(`20${year}-${month}-${day}`);
-  };
+  }
 
-  async parse(): Promise<void> {
-    const html = this.engine.state.email.html as string;
+  getId() {
+    const orderIdHtmlString = Util.extract(
+      this.engine.state.email.html as string,
+      '<!-- BEGIN - MAIN MESSAGE -->',
+      '<!-- END - MAIN MESSAGE -->',
+    );
 
-    const { currency, taxAmount, total } = this.getOrderSummary(html);
+    const $ = this.engine.domParser.parse(orderIdHtmlString);
+
+    const node = $('span')
+      .filter((index, el) => {
+        return $(el)
+          .text()
+          .trim()
+          .startsWith('ORDER #');
+      })
+      .first();
+
+    if (!node) {
+      throw new Error('Order number could not be retrieved');
+    }
+
+    const [, orderId] = node.text().match(/ORDER\s#(.*)/) as any;
+
+    return orderId;
+  }
+
+  getItems() {
+    const productsHtmlString = Util.extract(
+      this.engine.state.email.html as string,
+      '<!-- ORDER DETAILS -->',
+      '<!-- END - ORDER DETAILS -->',
+    );
+    const $ = this.engine.domParser.parse(productsHtmlString);
+
+    const nodes = $('.lineItem-meta');
+
+    return Array.from(nodes).map((node) => {
+      return this.getItem($, node);
+    });
+  }
+
+  getTaxes() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+
+    const nodes = $('td[width="140"]');
+
+    const taxAmount = this.getOrderSummaryItemAmount($, nodes, 'Tax:');
 
     const tax = {
       amount: taxAmount,
-      currency,
+      currency: this.merchant.currency,
       description: 'Sales Tax',
     };
+    return [tax];
+  }
 
-    this.engine.state.receipt = {
-      currency,
-      date: this.engine.state.email.date || this.getOrderDate(html),
-      items: this.getProducts(html),
-      orderId: this.getOrderId(html),
-      taxes: [tax],
-      total,
-    } as Receipt;
+  getTotal() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+
+    const nodes = $('td[width="140"]');
+
+    return this.getOrderSummaryItemAmount($, nodes, 'ORDER TOTAL:');
   }
 }

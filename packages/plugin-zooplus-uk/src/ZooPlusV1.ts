@@ -1,17 +1,16 @@
 import { Parser, Util } from '@openreceipt/core';
 
-import Merchant from './Merchant';
-
-const formatCurrency = (price: string) => {
-  return Util.formatCurrency(Merchant.currency, price);
-};
-
 export default class ZooPlusV1 extends Parser {
   static readonly meta = {
     since: 1533294699000,
+    sourceAddress: 'service@zooplus.co.uk',
   };
 
-  private getProductName = (htmlString: string) => {
+  private formatCurrency = (price: string) => {
+    return Util.formatCurrency(this.merchant.currency, price);
+  };
+
+  private getItemName = (htmlString: string) => {
     const productNameHtmlString = Util.extract(
       htmlString,
       '<!-- Product name -->',
@@ -28,7 +27,7 @@ export default class ZooPlusV1 extends Parser {
       .replace(/\s\s/g, ' ');
   };
 
-  private getProductDetails = (htmlString: string) => {
+  private getItemDetails = (htmlString: string) => {
     const lastEmptyRow = htmlString.lastIndexOf('<tr>');
 
     const start = htmlString.lastIndexOf('<tr>', lastEmptyRow - 1);
@@ -49,54 +48,33 @@ export default class ZooPlusV1 extends Parser {
     const [, quantity, amount] = res.match(/(\d)+x\s+(.*)\s(\w+)/);
 
     return {
-      amount: formatCurrency(amount),
-      quantity,
+      amount: this.formatCurrency(amount),
+      quantity: parseInt(quantity, 10),
     };
   };
 
-  private getProducts = (html: string) => {
-    const productsHtmlFragments = Util.extractAll(
-      html,
-      '<!-- Order block for one product -->',
-      '<!-- End Order block for one product -->',
-    );
+  getDate() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
 
-    return productsHtmlFragments.map((fragment) => {
-      const name = this.getProductName(fragment);
-      const { amount, quantity } = this.getProductDetails(fragment);
-
-      return {
-        amount,
-        currency: Merchant.currency,
-        description: name,
-        quantity: parseInt(quantity, 10),
-      };
+    const node = $('b').filter((index, el) => {
+      return $(el).text() === 'Order date:';
     });
-  };
 
-  private getTotal = (htmlString: string) => {
-    const orderTotalHtmlString = Util.extract(
-      htmlString,
-      '<!-- Grand total block -->',
-      '<!-- End Grand total block -->',
-    );
-    const $ = this.engine.domParser.parse(orderTotalHtmlString);
-
-    const node = $('tr > td[align=right] > p').first();
-
-    if (!node) {
-      throw new Error('Order total could not be retrieved');
+    if (!node || !node.parent()) {
+      throw new Error('Order date could not be retrieved');
     }
 
-    const [, amount] = (node.text() as string).match(
-      /(\d+.\d+)\s(\w+)/,
-    ) as any[];
+    const textContent = node.parent().text() as string;
 
-    return formatCurrency(amount);
-  };
+    const [, date] = textContent.match(/(\d+\/\d+\/\d+)/) as any;
 
-  private getOrderId = (htmlString: string) => {
-    const $ = this.engine.domParser.parse(htmlString);
+    return new Date(date);
+  }
+
+  getId() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
 
     const node = $('b')
       .filter((index, el) => {
@@ -113,48 +91,59 @@ export default class ZooPlusV1 extends Parser {
     const [, orderId] = textContent.match(/(\d+)/) as any;
 
     return orderId;
-  };
+  }
 
-  private getOrderDate = (htmlString: string) => {
-    const $ = this.engine.domParser.parse(htmlString);
+  getItems() {
+    const itemsHtmlFragments = Util.extractAll(
+      this.engine.state.email.html as string,
+      '<!-- Order block for one product -->',
+      '<!-- End Order block for one product -->',
+    );
 
-    const node = $('b').filter((index, el) => {
-      return $(el).text() === 'Order date:';
+    return itemsHtmlFragments.map((fragment) => {
+      const name = this.getItemName(fragment);
+
+      return {
+        currency: this.merchant.currency,
+        description: name,
+        ...this.getItemDetails(fragment),
+      };
     });
+  }
 
-    if (!node || !node.parent()) {
-      throw new Error('Order date could not be retrieved');
-    }
-
-    const textContent = node.parent().text() as string;
-
-    const [, date] = textContent.match(/(\d+\/\d+\/\d+)/) as any;
-
-    return new Date(date);
-  };
-
-  async parse(): Promise<void> {
-    const html = this.engine.state.email.html as string;
-
-    const total = this.getTotal(html);
+  getTaxes() {
+    const total = this.getTotal();
 
     const taxAmount = (total - total / 1.2) / 1000;
 
     const tax = {
       amount: Util.roundToDecimal(taxAmount, 3) * 1000,
-      currency: Merchant.currency,
+      currency: this.merchant.currency,
       description: 'VAT',
-      taxNumber: Merchant.taxNumber,
+      taxNumber: this.merchant.taxNumber,
     };
 
-    this.engine.state.receipt = {
-      currency: Merchant.currency,
-      date: this.engine.state.email.date || this.getOrderDate(html),
-      items: this.getProducts(html),
-      merchant: Merchant,
-      orderId: this.getOrderId(html),
-      taxes: [tax],
-      total,
-    };
+    return [tax];
+  }
+
+  getTotal() {
+    const orderTotalHtmlString = Util.extract(
+      this.engine.state.email.html as string,
+      '<!-- Grand total block -->',
+      '<!-- End Grand total block -->',
+    );
+    const $ = this.engine.domParser.parse(orderTotalHtmlString);
+
+    const node = $('tr > td[align=right] > p').first();
+
+    if (!node) {
+      throw new Error('Order total could not be retrieved');
+    }
+
+    const [, amount] = (node.text() as string).match(
+      /(\d+.\d+)\s(\w+)/,
+    ) as any[];
+
+    return this.formatCurrency(amount);
   }
 }

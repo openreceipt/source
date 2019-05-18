@@ -1,17 +1,16 @@
-import { Item, Parser, Receipt, Util } from '@openreceipt/core';
-
-import Merchant from './Merchant';
-
-const formatCurrency = (price: string) => {
-  return Util.formatCurrency(Merchant.currency, price);
-};
+import { Item, Parser, Util } from '@openreceipt/core';
 
 export default class UberEatsV1 extends Parser {
   static readonly meta = {
     since: new Date('2019-04-17T23:04:24.000Z').getTime(),
+    sourceAddress: 'Uber Receipts <uber.uk@uber.com>',
   };
 
-  private getProductName = (productHtmlFragment: string) => {
+  private formatCurrency = (price: string) => {
+    return Util.formatCurrency(this.merchant.currency, price);
+  };
+
+  private getItemName = (productHtmlFragment: string) => {
     return Util.extract(
       productHtmlFragment,
       '<!-- Name -->',
@@ -36,10 +35,10 @@ export default class UberEatsV1 extends Parser {
       '<!-- Price -->',
     ).trim();
 
-    return formatCurrency(productAmountString);
+    return this.formatCurrency(productAmountString);
   };
 
-  private getProductDetails = (productHtmlFragment: string) => {
+  private getItemDetails = (productHtmlFragment: string) => {
     const amount = this.getProductAmount(productHtmlFragment);
     const quantity = this.getProductQuantity(productHtmlFragment);
 
@@ -51,25 +50,25 @@ export default class UberEatsV1 extends Parser {
       );
 
       const subItems = subItemsFragments.map((fragment: string) => {
-        const description = this.getProductName(fragment);
+        const description = this.getItemName(fragment);
 
         const subAmountString = Util.extract(
           fragment,
           '<!-- Price -->',
           '<!-- close Price -->',
         ).trim();
-        const subAmount = formatCurrency(subAmountString);
+        const subAmount = this.formatCurrency(subAmountString);
 
         return {
           amount: subAmount,
-          currency: Merchant.currency,
+          currency: this.merchant.currency,
           description,
         };
       });
 
       return {
         amount,
-        currency: Merchant.currency,
+        currency: this.merchant.currency,
         quantity,
         subItems,
       };
@@ -77,15 +76,15 @@ export default class UberEatsV1 extends Parser {
 
     return {
       amount,
-      currency: Merchant.currency,
+      currency: this.merchant.currency,
       quantity,
     };
   };
 
-  private getProduct = (productHtmlFragment: string) => {
+  private getItem = (itemHtmlFragment: string) => {
     return {
-      description: this.getProductName(productHtmlFragment),
-      ...this.getProductDetails(productHtmlFragment),
+      description: this.getItemName(itemHtmlFragment),
+      ...this.getItemDetails(itemHtmlFragment),
     };
   };
 
@@ -104,13 +103,32 @@ export default class UberEatsV1 extends Parser {
     const amount = deliveryValueNode.text().trim();
 
     return {
-      amount: formatCurrency(amount),
+      amount: this.formatCurrency(amount),
       currency: 'GBP',
       description: deliveryLabelNode.text().trim(),
     };
   };
 
-  private getProducts = () => {
+  getDate() {
+    const $ = this.engine.domParser.parse(this.engine.state.email
+      .html as string);
+
+    const dateNode = $('span.Uber18_text_p1')
+      .first()
+      .text();
+
+    if (!dateNode) {
+      throw new Error('Order date could not be retrieved');
+    }
+
+    return new Date(dateNode);
+  }
+
+  getId() {
+    return `${this.getDate().getTime()}`;
+  }
+
+  getItems() {
     const productsHtmlString = Util.extract(
       this.engine.state.email.html as string,
       '<!-- Fare Breakdown section -->',
@@ -123,10 +141,25 @@ export default class UberEatsV1 extends Parser {
       '<!-- Eats Order Item -->',
     );
 
-    return productHtmlFragments.map(this.getProduct);
-  };
+    return [...productHtmlFragments.map(this.getItem), this.getDelivery()];
+  }
 
-  private getCurrencyAndTotal = () => {
+  getTaxes() {
+    const total = this.getTotal();
+
+    const taxAmount = (total - total / 1.2) / 1000;
+
+    const tax = {
+      amount: Util.roundToDecimal(taxAmount, 3) * 1000,
+      currency: this.merchant.currency,
+      description: 'VAT',
+      taxNumber: this.merchant.taxNumber,
+    };
+
+    return [tax];
+  }
+
+  getTotal() {
     const totalString = Util.extract(
       this.engine.state.email.html as string,
       '<!-- Total section -->',
@@ -143,47 +176,6 @@ export default class UberEatsV1 extends Parser {
 
     const amount = orderTotalValueNode.text().trim();
 
-    return {
-      currency: Merchant.currency,
-      total: formatCurrency(amount),
-    };
-  };
-
-  private getOrderDate = () => {
-    const $ = this.engine.domParser.parse(this.engine.state.email
-      .html as string);
-
-    const dateNode = $('span.Uber18_text_p1')
-      .first()
-      .text();
-
-    if (!dateNode) {
-      throw new Error('Order date could not be retrieved');
-    }
-
-    return new Date(dateNode);
-  };
-
-  async parse(): Promise<void> {
-    const { currency, total } = this.getCurrencyAndTotal();
-
-    const taxAmount = (total - total / 1.2) / 1000;
-
-    const tax = {
-      amount: Util.roundToDecimal(taxAmount, 3) * 1000,
-      currency,
-      description: 'VAT',
-      taxNumber: Merchant.taxNumber,
-    };
-
-    this.engine.state.receipt = {
-      currency,
-      date: this.engine.state.email.date || this.getOrderDate(),
-      items: [...this.getProducts(), this.getDelivery()],
-      merchant: Merchant,
-      orderId: `${this.getOrderDate().getTime()}`,
-      taxes: [tax],
-      total,
-    } as Receipt;
+    return this.formatCurrency(amount);
   }
 }
