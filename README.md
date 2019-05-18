@@ -8,6 +8,17 @@
 
 Parse receipt information from your emails!
 
+## Getting Started
+
+``` bash
+git clone https://github.com/openreceipt/source.git
+cd source
+yarn
+cd packages/cli-starter
+yarn build
+yarn start run <PATH_TO_EML_FILE>
+```
+
 ## Features
 
 - Plugin-based architecture

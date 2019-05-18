@@ -7,7 +7,7 @@
   consistent style throughout the codebase keeps the cognitive load low for all
   contributors and keeps the code style homogeneous.
 
-- **Node 8 LTS:** `open-receipt/source` has a minimum Node version
+- **Node 8 LTS:** `openreceipt/source` has a minimum Node version
   requirement of 8.0.0. Pull requests must not require a Node version greater
   than that unless the feature is enabled/backported via
   [TypeScript][link-typescript].
@@ -43,7 +43,7 @@ In order to contribute, you'll need to checkout the source from GitHub and
 install dependencies using Yarn:
 
 ``` bash
-git clone https://github.com/open-receipt/source.git
+git clone https://github.com/openreceipt/source.git
 cd source
 yarn
 yarn test
@@ -57,7 +57,7 @@ releases.
 
 ## Reporting a security vulnerability
 
-We want to ensure that `open-receipt/source` is secure for everyone. If
+We want to ensure that `openreceipt/source` is secure for everyone. If
 you've discovered a security vulnerability, we appreciate your help in
 disclosing it to us in a [responsible manner][link-responsible-disclosure].
 
