@@ -8,7 +8,7 @@ const formatCurrency = (price: string) => {
 
 export default class ZooPlusV1 extends Parser {
   static readonly meta = {
-    since: 1556733381000,
+    since: 1533294699000,
   };
 
   private getProductName = (htmlString: string) => {
