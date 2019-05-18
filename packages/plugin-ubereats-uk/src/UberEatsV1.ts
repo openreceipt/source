@@ -1,13 +1,10 @@
-import {
-  extract,
-  extractAll,
-  Item,
-  Parser,
-  Receipt,
-  roundToDecimal,
-} from '@openreceipt/core';
+import { Item, Parser, Receipt, Util } from '@openreceipt/core';
 
-import Plugin from './';
+import Merchant from './Merchant';
+
+const formatCurrency = (price: string) => {
+  return Util.formatCurrency(Merchant.currency, price);
+};
 
 export default class UberEatsV1 extends Parser {
   static readonly meta = {
@@ -15,7 +12,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getProductName = (productHtmlFragment: string) => {
-    return extract(
+    return Util.extract(
       productHtmlFragment,
       '<!-- Name -->',
       '<!-- close Name -->',
@@ -23,7 +20,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getProductQuantity = (productHtmlFragment: string) => {
-    const productQuantityString = extract(
+    const productQuantityString = Util.extract(
       productHtmlFragment,
       '<!-- Quanitty -->',
       '<!-- close Quanitty -->',
@@ -33,15 +30,13 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getProductAmount = (productHtmlFragment: string) => {
-    const productAmountString = extract(
+    const productAmountString = Util.extract(
       productHtmlFragment,
       '<!-- Price -->',
       '<!-- Price -->',
-    )
-      .trim()
-      .replace(/£|\./g, '');
+    ).trim();
 
-    return parseInt(productAmountString, 10);
+    return formatCurrency(productAmountString);
   };
 
   private getProductDetails = (productHtmlFragment: string) => {
@@ -49,7 +44,7 @@ export default class UberEatsV1 extends Parser {
     const quantity = this.getProductQuantity(productHtmlFragment);
 
     if (productHtmlFragment.includes('<!-- Eats sub/optional item -->')) {
-      const subItemsFragments = extractAll(
+      const subItemsFragments = Util.extractAll(
         productHtmlFragment,
         '<!-- Eats sub/optional item -->',
         '<!-- close Eats sub/optional item -->',
@@ -58,25 +53,23 @@ export default class UberEatsV1 extends Parser {
       const subItems = subItemsFragments.map((fragment: string) => {
         const description = this.getProductName(fragment);
 
-        const subAmountString = extract(
+        const subAmountString = Util.extract(
           fragment,
           '<!-- Price -->',
           '<!-- close Price -->',
-        )
-          .trim()
-          .replace(/£|\./g, '');
-        const subAmount = parseInt(subAmountString, 10);
+        ).trim();
+        const subAmount = formatCurrency(subAmountString);
 
         return {
           amount: subAmount,
-          currency: 'GBP',
+          currency: Merchant.currency,
           description,
         };
       });
 
       return {
         amount,
-        currency: 'GBP',
+        currency: Merchant.currency,
         quantity,
         subItems,
       };
@@ -84,7 +77,7 @@ export default class UberEatsV1 extends Parser {
 
     return {
       amount,
-      currency: 'GBP',
+      currency: Merchant.currency,
       quantity,
     };
   };
@@ -97,7 +90,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getDelivery = (): Item => {
-    const deliveryHtmlString = extract(
+    const deliveryHtmlString = Util.extract(
       this.engine.state.email.html as string,
       '<!-- End Deducted credits -->',
       '<!-- Tax Summary section -->',
@@ -108,26 +101,23 @@ export default class UberEatsV1 extends Parser {
     const deliveryLabelNode = $('td.Uber18_text_p1').first();
     const deliveryValueNode = $('td.Uber18_text_p1').last();
 
-    const amount = deliveryValueNode
-      .text()
-      .trim()
-      .replace(/£|\./g, '');
+    const amount = deliveryValueNode.text().trim();
 
     return {
-      amount: parseInt(amount, 10),
+      amount: formatCurrency(amount),
       currency: 'GBP',
       description: deliveryLabelNode.text().trim(),
     };
   };
 
   private getProducts = () => {
-    const productsHtmlString = extract(
+    const productsHtmlString = Util.extract(
       this.engine.state.email.html as string,
       '<!-- Fare Breakdown section -->',
       '<!-- End Fare Breakdown section -->',
     );
 
-    const productHtmlFragments = extractAll(
+    const productHtmlFragments = Util.extractAll(
       productsHtmlString,
       '<!-- Eats Order item -->',
       '<!-- Eats Order Item -->',
@@ -137,7 +127,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getCurrencyAndTotal = () => {
-    const totalString = extract(
+    const totalString = Util.extract(
       this.engine.state.email.html as string,
       '<!-- Total section -->',
       '<!-- End Total section -->',
@@ -151,14 +141,11 @@ export default class UberEatsV1 extends Parser {
       throw new Error('Order total could not be retrieved');
     }
 
-    const amount = orderTotalValueNode
-      .text()
-      .trim()
-      .replace(/£|\./g, '');
+    const amount = orderTotalValueNode.text().trim();
 
     return {
-      currency: 'GBP',
-      total: parseInt(amount, 10),
+      currency: Merchant.currency,
+      total: formatCurrency(amount),
     };
   };
 
@@ -183,17 +170,17 @@ export default class UberEatsV1 extends Parser {
     const taxAmount = (total - total / 1.2) / 1000;
 
     const tax = {
-      amount: roundToDecimal(taxAmount, 3) * 1000,
+      amount: Util.roundToDecimal(taxAmount, 3) * 1000,
       currency,
       description: 'VAT',
-      taxNumber: Plugin.meta.merchant!.taxNumber,
+      taxNumber: Merchant.taxNumber,
     };
 
     this.engine.state.receipt = {
       currency,
       date: this.engine.state.email.date || this.getOrderDate(),
       items: [...this.getProducts(), this.getDelivery()],
-      merchant: Plugin.meta.merchant,
+      merchant: Merchant,
       orderId: `${this.getOrderDate().getTime()}`,
       taxes: [tax],
       total,

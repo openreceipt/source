@@ -1,15 +1,11 @@
 import { Events, Meta, Plugin } from '@openreceipt/core';
 
+import Merchant from './Merchant';
 import UberEatsV1 from './UberEatsV1';
 
 export default class UberEatsUKPlugin extends Plugin {
   static readonly meta: Meta = {
-    merchant: {
-      email: 'uber.uk@uber.com',
-      name: 'UberEats',
-      online: true,
-      taxNumber: 'NL852071589B01',
-    },
+    merchant: Merchant,
     sourceAddresses: ['Uber Receipts <uber.uk@uber.com>'],
   };
 
