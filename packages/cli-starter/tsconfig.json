@@ -16,6 +16,7 @@
   "references": [
     { "path": "../cli" },
     { "path": "../plugin-console" },
+    { "path": "../plugin-itunes-uk" },
     { "path": "../plugin-mail" },
     { "path": "../plugin-best-buy-usa" },
     { "path": "../plugin-ubereats-uk" },
