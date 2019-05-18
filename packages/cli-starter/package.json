@@ -19,6 +19,7 @@
     "yarn": ">=1.3.0"
   },
   "scripts": {
+    "cleanup": "echo 'Nothing to clean!'",
     "build": "tsc -b",
     "start": "openreceipt",
     "precommit": "lint-staged",

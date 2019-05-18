@@ -18,6 +18,7 @@
     "yarn": ">=1.3.0"
   },
   "scripts": {
+    "cleanup": "yarn workspaces run cleanup",
     "commit": "git-cz",
     "build": "rimraf dist/ && tsc",
     "lint": "yarn workspaces run lint",
