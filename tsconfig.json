@@ -9,7 +9,7 @@
     ],
     "module": "commonjs",
     "outDir": "./dist",
-    "target": "es2015",
+    "target": "es2017",
 
     "baseUrl": "./packages",
     "rootDir": ".",
