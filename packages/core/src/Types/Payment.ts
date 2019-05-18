@@ -6,12 +6,12 @@ export interface CashPayment {
 
 export interface CardPayment {
   type: 'card';
-  bin: string;
+  bin?: string;
   cardNumber?: string;
-  authCode: string;
-  aid: string;
-  mid: string;
-  tid: string;
+  authCode?: string;
+  aid?: string;
+  mid?: string;
+  tid?: string;
   amount: number;
   currency: string;
 }
