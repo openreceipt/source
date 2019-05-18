@@ -125,13 +125,15 @@ export default class Engine {
       await engine.loadPlugins();
       await engine.execute();
     } catch (error) {
-      if (error instanceof FatalError) {
-        // Log and die
-        engine.log.error(error);
-        return;
-      }
+      // if (error instanceof FatalError) {
+      //   // Log and die
+      //   engine.log.error(error.message);
+      //   debug(error);
+      //   return;
+      // }
 
-      engine.log.error(error);
+      engine.log.error(error.message);
+      debug(error);
     }
   };
 }

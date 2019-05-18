@@ -3,7 +3,7 @@ import { Parser, Util } from '@openreceipt/core';
 export default class BestBuyV1 extends Parser {
   static readonly meta = {
     since: new Date(2017, 1, 1).getTime(),
-    sourceAddress: 'Best Buy <BestBuyInfo@emailinfo.bestbuy.com>',
+    sourceAddress: 'BestBuyInfo@emailinfo.bestbuy.com',
   };
 
   private formatCurrency = (price: string) => {

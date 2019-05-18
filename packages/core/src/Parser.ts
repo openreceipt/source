@@ -9,7 +9,7 @@ export interface ParserInterface {
 }
 
 export interface ParserMeta {
-  since?: number;
+  since: number;
   sourceAddress: string;
 }
 

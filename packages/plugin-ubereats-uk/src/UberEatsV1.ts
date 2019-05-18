@@ -3,7 +3,7 @@ import { Item, Parser, Util } from '@openreceipt/core';
 export default class UberEatsV1 extends Parser {
   static readonly meta = {
     since: new Date('2019-04-17T23:04:24.000Z').getTime(),
-    sourceAddress: 'Uber Receipts <uber.uk@uber.com>',
+    sourceAddress: 'uber.uk@uber.com',
   };
 
   private formatCurrency = (price: string) => {

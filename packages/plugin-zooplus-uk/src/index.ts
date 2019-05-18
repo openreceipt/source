@@ -1,42 +1,19 @@
 import { Events, Plugin } from '@openreceipt/core';
 
 import Merchant from './Merchant';
-import ZooPlusV1 from './ZooPlusV1';
+import ZooPlus20171022 from './ZooPlus20171022';
+import ZooPlus20180803 from './ZooPlus20180803';
 
 export default class ZooplusUKPlugin extends Plugin {
-  static readonly meta = {
+  readonly meta = {
     merchant: Merchant,
-    sourceAddresses: ['service@zooplus.co.uk'],
   };
 
-  parsers = [ZooPlusV1];
+  readonly parsers = [ZooPlus20171022, ZooPlus20180803];
 
   setupHooks = () => {
     return {
       [Events.EXEC_RECEIPT_PARSE]: [this.run],
     };
-  };
-
-  private findValidParser = () => {
-    // const sortedParsers =
-    // const parserTimestamps = this.parsers.();
-  };
-
-  run = async (): Promise<void> => {
-    // console.log('Running plugin @openreceipt/parser-zooplus-uk...');
-    // const sentAt = this.engine.parsedEmail.date.getTime();
-
-    if (
-      !ZooplusUKPlugin.meta.sourceAddresses!.includes(
-        this.engine.state.email.from.text,
-      )
-    ) {
-      // console.log('Not a match!');
-      return;
-    }
-
-    // @TODO Resolve correct parser using `sentAt`
-    const parser = new this.parsers[0](this.engine, Merchant);
-    await parser.parse();
   };
 }

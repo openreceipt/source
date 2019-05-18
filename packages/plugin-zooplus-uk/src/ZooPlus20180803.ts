@@ -1,6 +1,6 @@
 import { Parser, Util } from '@openreceipt/core';
 
-export default class ZooPlusV1 extends Parser {
+export default class ZooPlus20180803 extends Parser {
   static readonly meta = {
     since: 1533294699000,
     sourceAddress: 'service@zooplus.co.uk',
