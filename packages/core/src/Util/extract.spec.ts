@@ -1,12 +1,4 @@
-import { extract, roundToDecimal } from './helpers';
-
-describe('roundToDecimal', () => {
-  it('rounds decimal numbers to the required precision', () => {
-    const result = roundToDecimal(2.009, 2);
-
-    expect(result).toEqual(2.01);
-  });
-});
+import extract from './extract';
 
 describe('extract', () => {
   const START = '<p>';
