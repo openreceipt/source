@@ -1,16 +1,11 @@
 import { Events, Meta, Plugin } from '@openreceipt/core';
 
+import Merchant from './Merchant';
 import VapeClubV1 from './VapeClubV1';
 
 export default class VapeClubUKPlugin extends Plugin {
   static readonly meta: Meta = {
-    merchant: {
-      email: 'info@vapeclub.co.uk',
-      name: 'VapeClub',
-      online: true,
-      phone: '+441923479992',
-      taxNumber: 'GB196886725',
-    },
+    merchant: Merchant,
     sourceAddresses: ['info@vapeclub.co.uk'],
   };
 

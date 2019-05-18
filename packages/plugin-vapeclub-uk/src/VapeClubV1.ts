@@ -1,10 +1,14 @@
-import { Parser, roundToDecimal } from '@openreceipt/core';
+import { Parser, Util } from '@openreceipt/core';
 
-import Plugin from './';
+import Merchant from './Merchant';
+
+const formatCurrency = (price: string) => {
+  return Util.formatCurrency(Merchant.currency, price);
+};
 
 export default class VapeClubV1 extends Parser {
   static readonly meta = {
-    since: new Date('2017-06-17T17:56:23.000Z').getTime(),
+    since: 1556790017000,
   };
 
   private $!: CheerioStatic;
@@ -38,13 +42,11 @@ export default class VapeClubV1 extends Parser {
       .trim()
       .split('@');
 
-    const [, amountWithDecimal] = amountString.match(
-      /\(Total:\s£(.*)\)/,
-    ) as any;
+    const [, amount] = amountString.match(/\(Total:\s(.*)\)/) as any;
 
     return {
-      amount: parseInt(amountWithDecimal.replace('.', ''), 10),
-      currency: 'GBP',
+      amount: formatCurrency(amount),
+      currency: Merchant.currency,
       quantity: parseInt(quantity, 10),
     };
   };
@@ -77,14 +79,11 @@ export default class VapeClubV1 extends Parser {
       throw new Error('Order total could not be retrieved');
     }
 
-    const amount = orderTotalValueNode
-      .text()
-      .trim()
-      .replace(/£|\./g, '');
+    const amount = orderTotalValueNode.text().trim();
 
     return {
-      currency: 'GBP',
-      total: parseInt(amount, 10),
+      currency: Merchant.currency,
+      total: formatCurrency(amount),
     };
   };
 
@@ -144,17 +143,17 @@ export default class VapeClubV1 extends Parser {
     const taxAmount = (total - total / 1.2) / 1000;
 
     const tax = {
-      amount: roundToDecimal(taxAmount, 3) * 1000,
+      amount: Util.roundToDecimal(taxAmount, 3) * 1000,
       currency,
       description: 'VAT',
-      taxNumber: Plugin.meta.merchant!.taxNumber,
+      taxNumber: Merchant.taxNumber,
     };
 
     this.engine.state.receipt = {
       currency,
       date: this.engine.state.email.date || this.getOrderDate(),
       items: this.getProducts(),
-      merchant: Plugin.meta.merchant,
+      merchant: Merchant,
       orderId: this.getOrderId(),
       taxes: [tax],
       total,
