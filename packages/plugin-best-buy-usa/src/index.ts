@@ -1,16 +1,11 @@
 import { Events, Meta, Plugin } from '@openreceipt/core';
 
 import BestBuyV1 from './BestBuyV1';
+import Merchant from './Merchant';
 
 export default class BestBuyPlugin extends Plugin {
   static readonly meta: Meta = {
-    merchant: {
-      email: 'BestBuyInfo@emailinfo.bestbuy.com',
-      name: 'Best Buy USA',
-      online: true,
-      // phone: '+441234430366',
-      // taxNumber: 'GB922901342',
-    },
+    merchant: Merchant,
     sourceAddresses: ['Best Buy <BestBuyInfo@emailinfo.bestbuy.com>'],
   };
 
@@ -20,11 +15,6 @@ export default class BestBuyPlugin extends Plugin {
     return {
       [Events.EXEC_RECEIPT_PARSE]: [this.run],
     };
-  };
-
-  private findValidParser = () => {
-    // const sortedParsers =
-    // const parserTimestamps = this.parsers.();
   };
 
   run = async (): Promise<void> => {

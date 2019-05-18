@@ -1,20 +1,10 @@
-import { extract, Parser, Receipt } from '@openreceipt/core';
+import { Parser, Receipt, Util } from '@openreceipt/core';
 
-function getElementIndex(element: CheerioElement) {
-  return Array.from(element.parentNode!.children).indexOf(element);
-}
+import Merchant from './Merchant';
 
-function getCurrencyAndAmount(value: string, fallbackCurrency: string = 'USD') {
-  const [currencySymbol, ...rawAmount] = value;
-
-  const amount = parseInt(rawAmount.join('').replace('.', ''), 10);
-  const currency = currencySymbol === '$' ? 'USD' : fallbackCurrency;
-
-  return {
-    amount,
-    currency,
-  };
-}
+const formatCurrency = (price: string) => {
+  return Util.formatCurrency(Merchant.currency, price);
+};
 
 export default class BestBuyV1 extends Parser {
   static readonly meta = {
@@ -72,8 +62,9 @@ export default class BestBuyV1 extends Parser {
     const price = $(valueNodes.get(priceLabelNode.index())).text();
 
     return {
+      amount: formatCurrency(price),
+      currency: Merchant.currency,
       quantity,
-      ...getCurrencyAndAmount(price),
     };
   };
 
@@ -85,7 +76,7 @@ export default class BestBuyV1 extends Parser {
   };
 
   private getProducts = (html: string) => {
-    const productsHtmlString = extract(
+    const productsHtmlString = Util.extract(
       html,
       '<!-- ORDER DETAILS -->',
       '<!-- END - ORDER DETAILS -->',
@@ -129,7 +120,10 @@ export default class BestBuyV1 extends Parser {
       };
     }
 
-    return getCurrencyAndAmount(summaryItemLabelNode.next().text());
+    return {
+      amount: formatCurrency(summaryItemLabelNode.next().text()),
+      currency: Merchant.currency,
+    };
   };
 
   private getOrderSummary = (htmlString: string) => {
@@ -149,7 +143,7 @@ export default class BestBuyV1 extends Parser {
   };
 
   private getOrderId = (htmlString: string) => {
-    const orderIdHtmlString = extract(
+    const orderIdHtmlString = Util.extract(
       htmlString,
       '<!-- BEGIN - MAIN MESSAGE -->',
       '<!-- END - MAIN MESSAGE -->',
@@ -176,7 +170,7 @@ export default class BestBuyV1 extends Parser {
   };
 
   private getOrderDate = (htmlString: string) => {
-    const orderIdHtmlString = extract(
+    const orderIdHtmlString = Util.extract(
       htmlString,
       '<!-- BEGIN - MAIN MESSAGE -->',
       '<!-- END - MAIN MESSAGE -->',
