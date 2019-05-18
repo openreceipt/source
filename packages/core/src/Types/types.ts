@@ -14,7 +14,7 @@ export interface Item {
   subItems?: Omit<Item, 'subItems'>[];
 }
 
-export interface Taxes {
+export interface Tax {
   description: string;
   amount: number;
   currency: string;
@@ -26,7 +26,7 @@ export interface Receipt {
   currency: string;
   date: Date;
   items: Item[];
-  taxes?: Taxes[];
+  taxes?: Tax[];
   payments?: Payment[];
   merchant?: Merchant;
 }
