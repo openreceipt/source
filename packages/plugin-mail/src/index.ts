@@ -1,4 +1,7 @@
 import { Events, Plugin } from '@openreceipt/core';
+import createDebug from 'debug';
+
+const debug = createDebug('openreceipt:plugin-mail');
 
 export default class MailPlugin extends Plugin {
   setupHooks = () => {
@@ -11,5 +14,8 @@ export default class MailPlugin extends Plugin {
     this.engine.state.email = await this.engine.mailParser.parse(
       this.engine.input,
     );
+
+    debug(`Email sent from: ${this.engine.state.email.from.text}`);
+    debug(`Email sent at: ${this.engine.state.email.date!.getTime()}`);
   };
 }
