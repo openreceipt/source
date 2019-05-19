@@ -9,7 +9,7 @@ export default class VapeClubV1 extends Parser {
   private $!: CheerioStatic;
 
   private formatCurrency = (price: string) => {
-    return Util.formatCurrency(this.merchant.currency, price);
+    return Util.formatCurrency(this.getCurrency(), price);
   };
 
   private getItemName = (itemNode: CheerioElement) => {
@@ -50,7 +50,7 @@ export default class VapeClubV1 extends Parser {
 
     return {
       amount: this.formatCurrency(amount),
-      currency: this.merchant.currency,
+      currency: this.getCurrency(),
       quantity: parseInt(quantity, 10),
     };
   };
@@ -128,7 +128,7 @@ export default class VapeClubV1 extends Parser {
 
     const tax = {
       amount: Util.roundToDecimal(taxAmount, 3) * 1000,
-      currency: this.merchant.currency,
+      currency: this.getCurrency(),
       description: 'VAT',
       taxNumber: this.merchant.taxNumber,
     };

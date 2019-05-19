@@ -1,6 +1,7 @@
 import { ParsedMail } from '@openreceipt/mail';
 
 import Engine from './Engine';
+import FatalError from './Errors/FatalError';
 import { Merchant } from './Types/Merchant';
 import { Item, Tax } from './Types/types';
 
@@ -19,15 +20,27 @@ export default abstract class Parser implements ParserInterface {
   constructor(protected engine: Engine, protected merchant: Merchant) {}
 
   abstract getItems(): Item[];
-  abstract getDate(): Date;
   abstract getId(): string;
   abstract getTaxes(): Tax[];
   abstract getTotal(): number;
 
-  async parse(): Promise<void> {
+  getCurrency(): string {
+    if (!this.merchant.currency) {
+      throw new FatalError(
+        'Please override the `getCurrency()` method in your parser',
+      );
+    }
+    return this.merchant.currency;
+  }
+
+  getDate(): Date {
+    return this.engine.state.email.date as Date;
+  }
+
+  async parse() {
     this.engine.state.receipt = {
-      currency: this.merchant.currency,
-      date: this.engine.state.email.date || this.getDate(),
+      currency: this.getCurrency(),
+      date: this.getDate(),
       items: this.getItems(),
       merchant: this.merchant,
       orderId: this.getId(),

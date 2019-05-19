@@ -7,7 +7,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private formatCurrency = (price: string) => {
-    return Util.formatCurrency(this.merchant.currency, price);
+    return Util.formatCurrency(this.getCurrency(), price);
   };
 
   private getItemName = (productHtmlFragment: string) => {
@@ -61,14 +61,14 @@ export default class UberEatsV1 extends Parser {
 
         return {
           amount: subAmount,
-          currency: this.merchant.currency,
+          currency: this.getCurrency(),
           description,
         };
       });
 
       return {
         amount,
-        currency: this.merchant.currency,
+        currency: this.getCurrency(),
         quantity,
         subItems,
       };
@@ -76,7 +76,7 @@ export default class UberEatsV1 extends Parser {
 
     return {
       amount,
-      currency: this.merchant.currency,
+      currency: this.getCurrency(),
       quantity,
     };
   };
@@ -151,7 +151,7 @@ export default class UberEatsV1 extends Parser {
 
     const tax = {
       amount: Util.roundToDecimal(taxAmount, 3) * 1000,
-      currency: this.merchant.currency,
+      currency: this.getCurrency(),
       description: 'VAT',
       taxNumber: this.merchant.taxNumber,
     };

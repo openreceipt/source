@@ -7,7 +7,7 @@ export default class BestBuyV1 extends Parser {
   };
 
   private formatCurrency = (price: string) => {
-    return Util.formatCurrency(this.merchant.currency, price);
+    return Util.formatCurrency(this.getCurrency(), price);
   };
 
   private getItemName = ($: CheerioStatic, itemNode: CheerioElement) => {
@@ -56,7 +56,7 @@ export default class BestBuyV1 extends Parser {
 
     return {
       amount: this.formatCurrency(price),
-      currency: this.merchant.currency,
+      currency: this.getCurrency(),
       quantity,
     };
   };
@@ -180,7 +180,7 @@ export default class BestBuyV1 extends Parser {
 
     const tax = {
       amount: taxAmount,
-      currency: this.merchant.currency,
+      currency: this.getCurrency(),
       description: 'Sales Tax',
     };
     return [tax];
