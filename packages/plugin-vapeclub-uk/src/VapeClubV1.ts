@@ -6,8 +6,6 @@ export default class VapeClubV1 extends Parser {
     sourceAddress: 'info@vapeclub.co.uk',
   };
 
-  private $!: CheerioStatic;
-
   private formatCurrency = (price: string) => {
     return Util.formatCurrency(this.getCurrency(), price);
   };
@@ -67,7 +65,7 @@ export default class VapeClubV1 extends Parser {
       .html as string);
     const orderDateLabelNode = $('td')
       .filter((index, el) => {
-        return this.$(el)
+        return $(el)
           .text()
           .startsWith('Order Date:');
       })
