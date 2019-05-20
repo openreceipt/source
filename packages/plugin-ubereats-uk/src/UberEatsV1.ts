@@ -7,11 +7,11 @@ export default class UberEatsV1 extends Parser {
   };
 
   private formatCurrency = (price: string) => {
-    return Util.formatCurrency(this.getCurrency(), price);
+    return Util.Currency.getAmountFromPriceString(this.getCurrency(), price);
   };
 
   private getItemName = (productHtmlFragment: string) => {
-    return Util.extract(
+    return Util.Text.extract(
       productHtmlFragment,
       '<!-- Name -->',
       '<!-- close Name -->',
@@ -19,7 +19,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getProductQuantity = (productHtmlFragment: string) => {
-    const productQuantityString = Util.extract(
+    const productQuantityString = Util.Text.extract(
       productHtmlFragment,
       '<!-- Quanitty -->',
       '<!-- close Quanitty -->',
@@ -29,7 +29,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getProductAmount = (productHtmlFragment: string) => {
-    const productAmountString = Util.extract(
+    const productAmountString = Util.Text.extract(
       productHtmlFragment,
       '<!-- Price -->',
       '<!-- Price -->',
@@ -43,7 +43,7 @@ export default class UberEatsV1 extends Parser {
     const quantity = this.getProductQuantity(productHtmlFragment);
 
     if (productHtmlFragment.includes('<!-- Eats sub/optional item -->')) {
-      const subItemsFragments = Util.extractAll(
+      const subItemsFragments = Util.Text.extractAll(
         productHtmlFragment,
         '<!-- Eats sub/optional item -->',
         '<!-- close Eats sub/optional item -->',
@@ -52,7 +52,7 @@ export default class UberEatsV1 extends Parser {
       const subItems = subItemsFragments.map((fragment: string) => {
         const description = this.getItemName(fragment);
 
-        const subAmountString = Util.extract(
+        const subAmountString = Util.Text.extract(
           fragment,
           '<!-- Price -->',
           '<!-- close Price -->',
@@ -89,7 +89,7 @@ export default class UberEatsV1 extends Parser {
   };
 
   private getDelivery = (): Item => {
-    const deliveryHtmlString = Util.extract(
+    const deliveryHtmlString = Util.Text.extract(
       this.engine.state.email.html as string,
       '<!-- End Deducted credits -->',
       '<!-- Tax Summary section -->',
@@ -109,33 +109,33 @@ export default class UberEatsV1 extends Parser {
     };
   };
 
-  getDate() {
-    const $ = this.engine.domParser.parse(this.engine.state.email
-      .html as string);
-
-    const dateNode = $('span.Uber18_text_p1')
-      .first()
-      .text();
-
-    if (!dateNode) {
-      throw new Error('Order date could not be retrieved');
-    }
-
-    return new Date(dateNode);
-  }
+  // getDate() {
+  //   const $ = this.engine.domParser.parse(this.engine.state.email
+  //     .html as string);
+  //
+  //   const dateNode = $('span.Uber18_text_p1')
+  //     .first()
+  //     .text();
+  //
+  //   if (!dateNode) {
+  //     throw new Error('Order date could not be retrieved');
+  //   }
+  //
+  //   return new Date(dateNode);
+  // }
 
   getId() {
     return `${this.getDate().getTime()}`;
   }
 
   getItems() {
-    const productsHtmlString = Util.extract(
+    const productsHtmlString = Util.Text.extract(
       this.engine.state.email.html as string,
       '<!-- Fare Breakdown section -->',
       '<!-- End Fare Breakdown section -->',
     );
 
-    const productHtmlFragments = Util.extractAll(
+    const productHtmlFragments = Util.Text.extractAll(
       productsHtmlString,
       '<!-- Eats Order item -->',
       '<!-- Eats Order Item -->',
@@ -147,10 +147,9 @@ export default class UberEatsV1 extends Parser {
   getTaxes() {
     const total = this.getTotal();
 
-    const taxAmount = (total - total / 1.2) / 1000;
-
+    const taxAmount = total - total / 1.2;
     const tax = {
-      amount: Util.roundToDecimal(taxAmount, 3) * 1000,
+      amount: parseInt(Util.Currency.toFixed(taxAmount, 2), 10),
       currency: this.getCurrency(),
       description: 'VAT',
       taxNumber: this.merchant.taxNumber,
@@ -160,7 +159,7 @@ export default class UberEatsV1 extends Parser {
   }
 
   getTotal() {
-    const totalString = Util.extract(
+    const totalString = Util.Text.extract(
       this.engine.state.email.html as string,
       '<!-- Total section -->',
       '<!-- End Total section -->',
