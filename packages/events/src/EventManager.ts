@@ -15,9 +15,10 @@ export default class EventManager {
       return;
     }
 
-    this.events[`before:${eventName}`] = [];
-    this.events[eventName] = [];
-    this.events[`after:${eventName}`] = [];
+    this.events[`before:${eventName}`] =
+      this.events[`before:${eventName}`] || [];
+    this.events[eventName] = this.events[eventName] || [];
+    this.events[`after:${eventName}`] = this.events[`after:${eventName}`] || [];
   };
 
   private executeEventCallbacks = async (eventName: string) => {
@@ -32,17 +33,9 @@ export default class EventManager {
   };
 
   fireEvent = async (eventName: string) => {
-    // Check and fire `before:` events
-    if (Object.keys(this.events).includes(`before:${eventName}`)) {
-      await this.executeEventCallbacks(`before:${eventName}`);
-    }
-
+    await this.executeEventCallbacks(`before:${eventName}`);
     await this.executeEventCallbacks(eventName);
-
-    // Check and fire `after:` events
-    if (Object.keys(this.events).includes(`after:${eventName}`)) {
-      await this.executeEventCallbacks(`after:${eventName}`);
-    }
+    await this.executeEventCallbacks(`after:${eventName}`);
   };
 
   addListener = (eventName: string, callback: HookCallback) => {
