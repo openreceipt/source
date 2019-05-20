@@ -7,7 +7,7 @@ export default class BestBuyV1 extends Parser {
   };
 
   private formatCurrency = (price: string) => {
-    return Util.formatCurrency(this.getCurrency(), price);
+    return Util.Currency.getAmountFromPriceString(this.getCurrency(), price);
   };
 
   private getItemName = ($: CheerioStatic, itemNode: CheerioElement) => {
@@ -99,7 +99,7 @@ export default class BestBuyV1 extends Parser {
   };
 
   getDate() {
-    const orderIdHtmlString = Util.extract(
+    const orderIdHtmlString = Util.Text.extract(
       this.engine.state.email.html as string,
       '<!-- BEGIN - MAIN MESSAGE -->',
       '<!-- END - MAIN MESSAGE -->',
@@ -129,7 +129,7 @@ export default class BestBuyV1 extends Parser {
   }
 
   getId() {
-    const orderIdHtmlString = Util.extract(
+    const orderIdHtmlString = Util.Text.extract(
       this.engine.state.email.html as string,
       '<!-- BEGIN - MAIN MESSAGE -->',
       '<!-- END - MAIN MESSAGE -->',
@@ -156,7 +156,7 @@ export default class BestBuyV1 extends Parser {
   }
 
   getItems() {
-    const productsHtmlString = Util.extract(
+    const productsHtmlString = Util.Text.extract(
       this.engine.state.email.html as string,
       '<!-- ORDER DETAILS -->',
       '<!-- END - ORDER DETAILS -->',
