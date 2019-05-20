@@ -7,11 +7,11 @@ export default class ZooPlus20171022 extends Parser {
   };
 
   private formatCurrency = (price: string) => {
-    return Util.formatCurrency(this.getCurrency(), price);
+    return Util.Currency.getAmountFromPriceString(this.getCurrency(), price);
   };
 
   private getItemName = (htmlString: string) => {
-    const productNameHtmlString = Util.extract(
+    const productNameHtmlString = Util.Text.extract(
       htmlString,
       '<!-- Product name -->',
       '</tr>',
@@ -94,7 +94,7 @@ export default class ZooPlus20171022 extends Parser {
   }
 
   getItems() {
-    const itemsHtmlFragments = Util.extractAll(
+    const itemsHtmlFragments = Util.Text.extractAll(
       this.engine.state.email.html as string,
       '<!-- Order block for one product -->',
       '<!-- End Order block for one product -->',
@@ -127,7 +127,7 @@ export default class ZooPlus20171022 extends Parser {
   }
 
   getTotal() {
-    const orderTotalHtmlString = Util.extract(
+    const orderTotalHtmlString = Util.Text.extract(
       this.engine.state.email.html as string,
       '<!-- Grand total block -->',
       '<!-- End Grand total block -->',
