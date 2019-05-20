@@ -33,7 +33,6 @@ export default abstract class Plugin implements PluginInterface {
       return Promise.resolve();
     }
 
-    debug(`Resolving parser in ${this.constructor.name}...`);
     const ParserClass = this.resolver.resolve(
       this.engine.state.email.from.text,
       this.engine.state.email.date!.getTime(),
@@ -41,9 +40,9 @@ export default abstract class Plugin implements PluginInterface {
     ) as any;
 
     if (!ParserClass) {
-      debug('Could not resolve a valid parser!');
       return Promise.resolve();
     }
+    debug(`Resolved parser for ${this.constructor.name}...`);
 
     const parser = new ParserClass(this.engine, this.meta.merchant);
     await parser.parse();
