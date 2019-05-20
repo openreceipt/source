@@ -13,11 +13,5 @@
     "**/*.integ.ts",
     "**/__fixtures__/*.*"
   ],
-  "references": [
-    { "path": "../countries" },
-    { "path": "../currency" },
-    { "path": "../dom" },
-    { "path": "../events" },
-    { "path": "../mail" }
-  ]
+  "references": []
 }
