@@ -7,7 +7,7 @@ export default class VapeClubV1 extends Parser {
   };
 
   private formatCurrency = (price: string) => {
-    return Util.formatCurrency(this.getCurrency(), price);
+    return Util.Currency.getAmountFromPriceString(this.getCurrency(), price);
   };
 
   private getItemName = (itemNode: CheerioElement) => {
@@ -122,10 +122,9 @@ export default class VapeClubV1 extends Parser {
   getTaxes() {
     const total = this.getTotal();
 
-    const taxAmount = (total - total / 1.2) / 1000;
-
+    const taxAmount = total - total / 1.2;
     const tax = {
-      amount: Util.roundToDecimal(taxAmount, 3) * 1000,
+      amount: parseInt(Util.Currency.toFixed(taxAmount, 2), 10),
       currency: this.getCurrency(),
       description: 'VAT',
       taxNumber: this.merchant.taxNumber,
