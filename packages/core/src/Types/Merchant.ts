@@ -1,7 +1,7 @@
 export interface Merchant {
-  country: string;
+  country?: string;
   currency?: string;
-  email: string;
+  email?: string;
   name: string;
   online: boolean;
   phone?: string;
