@@ -4,6 +4,7 @@
     { "path": "./cli" },
     { "path": "./cli-starter" },
     { "path": "./core" },
+    { "path": "./currency" },
     { "path": "./dom" },
     { "path": "./events" },
     { "path": "./mail" },

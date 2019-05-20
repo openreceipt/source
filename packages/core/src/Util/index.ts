@@ -1,4 +1,4 @@
-import * as Currency from './Currency';
+import Currency from '@openreceipt/currency';
 import * as Text from './Text';
 
 import extract from './extract';
