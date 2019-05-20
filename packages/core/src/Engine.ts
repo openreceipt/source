@@ -91,6 +91,7 @@ export default class Engine {
           [pluginName]: pluginInstance,
         };
       } catch (error) {
+        debug(error);
         throw new FatalError(`Could not load ${pluginName} plugin`);
       }
     });
