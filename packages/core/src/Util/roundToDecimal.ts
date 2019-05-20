@@ -1,3 +1,8 @@
+/**
+ * @deprecated Use `Util.Currency.toFixed()` instead
+ * @param num
+ * @param decimalPlaces
+ */
 const roundToDecimal = (num: number, decimalPlaces: number) => {
   let zeros = (1.0).toFixed(decimalPlaces);
   zeros = zeros.substr(2);

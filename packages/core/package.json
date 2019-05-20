@@ -33,6 +33,7 @@
     "@openreceipt/dom": "^0.0.1",
     "@openreceipt/events": "^0.0.1",
     "@openreceipt/mail": "^0.0.1",
+    "accounting": "^0.4.1",
     "cosmiconfig": "^5",
     "currency-formatter": "^1",
     "debug": "^4",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
+    "@types/accounting": "^0.4.1",
     "@types/cosmiconfig": "^5",
     "@types/currency-formatter": "^1",
     "@types/debug": "^4",

@@ -5,7 +5,6 @@ import Util from './Util';
 
 export * from './Parser';
 export * from './Plugin';
-export * from './Util/between';
 export * from './Types/Engine';
 export * from './Types/Events';
 export * from './Types/Merchant';

@@ -1,3 +1,9 @@
+/**
+ * @deprecated Use `Util.Text.extract()` instead
+ * @param text
+ * @param prefix
+ * @param suffix
+ */
 const extract = (text: string, prefix: string, suffix: string) => {
   let str = text;
   const startIndex = str.indexOf(prefix);

@@ -1,11 +1,14 @@
-import between from './between';
+import * as Currency from './Currency';
+import * as Text from './Text';
+
 import extract from './extract';
 import extractAll from './extractAll';
 import formatCurrency from './formatCurrency';
 import roundToDecimal from './roundToDecimal';
 
 export default {
-  between,
+  Currency,
+  Text,
   extract,
   extractAll,
   formatCurrency,

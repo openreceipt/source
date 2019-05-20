@@ -1,3 +1,9 @@
+/**
+ * @deprecated Use `Util.Text.extractAll()` instead
+ * @param text
+ * @param prefix
+ * @param suffix
+ */
 const extractAll = (text: string, prefix: string, suffix: string) => {
   const innerExtract = (
     innerText: string,
