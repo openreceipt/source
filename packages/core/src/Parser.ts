@@ -37,12 +37,24 @@ export default abstract class Parser implements ParserInterface {
     return this.engine.state.email.date as Date;
   }
 
+  getTaxNumber(): string {
+    if (!this.merchant.taxNumber) {
+      throw new FatalError(
+        'Please override the `getTaxNumber()` method in your parser',
+      );
+    }
+    return this.merchant.taxNumber;
+  }
+
   async parse() {
     this.engine.state.receipt = {
       currency: this.getCurrency(),
       date: this.getDate(),
       items: this.getItems(),
-      merchant: this.merchant,
+      merchant: {
+        ...this.merchant,
+        taxNumber: this.getTaxNumber(),
+      },
       orderId: this.getId(),
       taxes: (this.getTaxes && this.getTaxes()) || [],
       total: this.getTotal(),
