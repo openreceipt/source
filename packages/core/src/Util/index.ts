@@ -1,5 +1,5 @@
-import Countries from '@openreceipt/countries';
-import Currency from '@openreceipt/currency';
+import * as Countries from '@openreceipt/countries';
+import * as Currency from '@openreceipt/currency';
 import * as Text from './Text';
 
 import extract from './extract';
