@@ -30,18 +30,31 @@ describe('EventManager', () => {
     expect(afterSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should fire events at the correct lifecycles', async () => {
+  it('should fire lifecycle events correctly', async () => {
     const EVENT_NAME = 'my-event';
     const eventManager = new EventManager();
 
-    const beforeSpy = jest.fn();
-    const spy = jest.fn();
-    const afterSpy = jest.fn();
+    let result: number[] = [];
+
+    const beforeSpy = jest.fn(async () => {
+      result.push(1);
+      return await Promise.resolve();
+    });
+    const spy = jest.fn(async () => {
+      result.push(2);
+      return await Promise.resolve();
+    });
+    const afterSpy = jest.fn(async () => {
+      result.push(3);
+      return await Promise.resolve();
+    });
 
     eventManager.addListener(`before:${EVENT_NAME}`, beforeSpy);
     eventManager.addListener(EVENT_NAME, spy);
     eventManager.addListener(`after:${EVENT_NAME}`, afterSpy);
     await eventManager.fireEvent(EVENT_NAME);
+
+    expect(result).toEqual([1, 2, 3]);
     expect(beforeSpy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(afterSpy).toHaveBeenCalledTimes(1);
