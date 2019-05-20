@@ -24,6 +24,15 @@ export default abstract class Parser implements ParserInterface {
   abstract getTaxes(): Tax[];
   abstract getTotal(): number;
 
+  getCountry(): string {
+    if (!this.merchant.country) {
+      throw new FatalError(
+        'Please override the `getCountry()` method in your parser',
+      );
+    }
+    return this.merchant.country;
+  }
+
   getCurrency(): string {
     if (!this.merchant.currency) {
       throw new FatalError(
@@ -53,6 +62,7 @@ export default abstract class Parser implements ParserInterface {
       items: this.getItems(),
       merchant: {
         ...this.merchant,
+        country: this.getCountry(),
         taxNumber: this.getTaxNumber(),
       },
       orderId: this.getId(),
