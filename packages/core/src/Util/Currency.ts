@@ -1,5 +1,5 @@
 import accounting from 'accounting';
-import currencyFormatter from 'currency-formatter';
+import currencyFormatter, { Currency } from 'currency-formatter';
 
 export const getAmountFromPriceString = (
   currencyCode: string,
@@ -20,6 +20,6 @@ export const format = currencyFormatter.format;
 
 export const unformat = currencyFormatter.unformat;
 
-export const currencies = currencyFormatter.currencies;
+export const currencies: Currency[] = currencyFormatter.currencies;
 
 export const toFixed = accounting.toFixed;
