@@ -2,9 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-
-    "skipLibCheck": true
+    "rootDir": "./src"
   },
   "include": [
     "src"
@@ -16,10 +14,6 @@
     "**/__fixtures__/*.*"
   ],
   "references": [
-    { "path": "../core" },
-    { "path": "../dom" },
-    { "path": "../generator-plugin" },
-    { "path": "../mail" },
-    { "path": "../plugin-mail" }
+    { "path": "../core" }
   ]
 }

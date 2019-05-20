@@ -1,0 +1,35 @@
+import { Events, Meta, Plugin } from '@openreceipt/core';
+
+export default class <%= retailerNameCamelCase %>Plugin extends Plugin {
+  static readonly meta: Meta = {
+    merchant: {
+      email: '',
+      name: '',
+      online: true,
+    },
+  };
+
+  parsers = [];
+
+  setupHooks = () => {
+    return {
+      [Events.EXEC_RECEIPT_PARSE]: [this.run],
+    };
+  };
+
+  run = async (): Promise<void> => {
+
+    if (
+      !<%= retailerNameCamelCase %>Plugin.meta.sourceAddresses!.includes(
+        this.engine.state.email.from.text,
+      )
+    ) {
+      // console.log('Not a match!');
+      return;
+    }
+
+    // @TODO Resolve correct parser using `sentAt`
+    const parser = new this.parsers[0](this.engine);
+    await parser.parse();
+  };
+}

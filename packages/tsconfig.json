@@ -8,6 +8,7 @@
     { "path": "./currency" },
     { "path": "./dom" },
     { "path": "./events" },
+    { "path": "./generator-plugin" },
     { "path": "./mail" },
     { "path": "./plugin-best-buy-usa" },
     { "path": "./plugin-console" },

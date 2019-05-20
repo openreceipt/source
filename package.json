@@ -40,6 +40,18 @@
   "workspaces": {
     "packages": [
       "packages/*"
+    ],
+    "nohoist": [
+      "**/@openreceipt/cli",
+      "**/@openreceipt/cli/**",
+      "**/@types/inquirer",
+      "**/@types/inquirer/**",
+      "**/@types/yeoman-generator",
+      "**/@types/yeoman-generator/**",
+      "**/@types/yeoman-environment",
+      "**/@types/yeoman-environment/**",
+      "**/@types/yeoman-test",
+      "**/@types/yeoman-test/**"
     ]
   }
 }

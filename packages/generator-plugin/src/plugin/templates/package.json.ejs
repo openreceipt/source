@@ -1,11 +1,8 @@
 {
-  "name": "@openreceipt/cli",
-  "description": "CLI package for OpenReceipt",
-  "version": "0.1.1",
+  "name": "@openreceipt/<%= packageName %>",
+  "description": "<%= retailerName %> <%= retailerCountry %> plugin for OpenReceipt",
+  "version": "0.0.1",
   "license": "MIT",
-  "bin": {
-    "openreceipt": "bin/index.js"
-  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": {
@@ -22,49 +19,35 @@
     "yarn": ">=1.3.0"
   },
   "scripts": {
-    "cleanup": "yarn prebuild && yarn pretest && rimraf *.tsbuildinfo",
     "prebuild": "rimraf dist/",
-    "build": "tsc -b",
+    "build": "tsc",
     "build:docs": "rimraf docs/api && typedoc --out docs/api --target es6 --theme minimal --mode file src",
-    "start": "ts-node src/index.ts",
     "precommit": "lint-staged",
     "lint": "tslint -p tsconfig.json -t codeFrame 'src/**/*.ts' -e 'src/**/*.spec.ts'",
     "pretest": "rimraf coverage/",
-    "test": "echo 'No tests for this package'",
-    "prepublishOnly": "yarn cleanup && yarn build"
+    "test": "jest --no-cache --coverage"
+  },
+  "peerDependencies": {
+    "@openreceipt/core": "^0.0.1"
   },
   "dependencies": {
-    "@openreceipt/core": "^0.1.1",
-    "@openreceipt/dom": "^0.1.0",
-    "@openreceipt/generator-plugin": "^0.0.1",
-    "@openreceipt/mail": "^0.1.0",
-    "@openreceipt/plugin-mail": "^0.1.1",
-    "tslib": "^1",
-    "yeoman-environment": "^2"
+    "tslib": "^1"
   },
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
-    "@types/cosmiconfig": "^5",
+    "@openreceipt/core": "^0.0.1",
     "@types/jest": "^24",
-    "@types/lodash.get": "^4",
-    "@types/lodash.has": "^4",
     "@types/node": "8.*",
-    "@types/yeoman-environment": "^2",
     "jest": "^24",
-    "lint-staged": "^8",
+    "lint-staged": "^7",
     "prettier": "^1",
     "rimraf": "^2",
     "ts-jest": "^24",
-    "ts-node": "^8",
     "tslint": "^5",
     "tslint-config-prettier": "^1",
     "tslint-eslint-rules": "^5",
-    "type-zoo": "^3",
     "typedoc": "^0.13.0",
     "typescript": "^3"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

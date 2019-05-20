@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "./generators",
     "rootDir": "./src",
 
     "skipLibCheck": true
@@ -11,15 +11,11 @@
   ],
   "exclude": [
     "node_modules",
+    "**/templates/*",
     "**/*.spec.ts",
     "**/*.integ.ts",
-    "**/__fixtures__/*.*"
+    "**/__fixtures__/*.*",
+    "src/setupTests.ts"
   ],
-  "references": [
-    { "path": "../core" },
-    { "path": "../dom" },
-    { "path": "../generator-plugin" },
-    { "path": "../mail" },
-    { "path": "../plugin-mail" }
-  ]
+  "references": []
 }
