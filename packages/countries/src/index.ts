@@ -6,11 +6,6 @@ export type Country = Types.Country;
 
 export const countries: Types.Country[] = Countries;
 
-export const findCountryByName = (name: string): Country | undefined => {
-  const [firstResult] = findCountriesByName(name);
-  return firstResult;
-};
-
 export const findCountriesByName = (name: string): Country[] => {
   return countries.filter((country) => {
     return [
@@ -19,4 +14,9 @@ export const findCountriesByName = (name: string): Country[] => {
       ...country.altSpellings,
     ].includes(name.trim());
   });
+};
+
+export const findCountryByName = (name: string): Country | undefined => {
+  const [firstResult] = findCountriesByName(name);
+  return firstResult;
 };
