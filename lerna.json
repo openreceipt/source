@@ -1,7 +1,14 @@
 {
+  "command": {
+    "version": {
+      "allowBranch": "master",
+      "message": "chore: tag and release %s"
+    }
+  },
   "npmClient": "yarn",
   "packages": [
     "packages/*"
   ],
+  "useWorkspaces": true,
   "version": "0.0.0"
 }
