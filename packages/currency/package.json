@@ -26,7 +26,8 @@
     "precommit": "lint-staged",
     "lint": "tslint -p tsconfig.json -t codeFrame 'src/**/*.ts' -e 'src/**/*.spec.ts'",
     "pretest": "rimraf coverage/",
-    "test": "echo 'No tests for this package'"
+    "test": "echo 'No tests for this package'",
+    "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "accounting": "^0.4.1",
