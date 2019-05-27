@@ -50,5 +50,8 @@
     "tslint-eslint-rules": "^5",
     "typedoc": "^0.13.0",
     "typescript": "^3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
