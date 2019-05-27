@@ -23,7 +23,7 @@
     "build": "rimraf dist/ && tsc",
     "lint": "yarn workspaces run lint",
     "test": "CI=true yarn workspaces run test",
-    "release": "lerna publish --conventional-commits --yes"
+    "release": "lerna publish --conventional-commits --github-release --yes"
   },
   "dependencies": {
     "tslib": "^1"
