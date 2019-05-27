@@ -1,5 +1,8 @@
 {
   "command": {
+    "run": {
+      "npmClient": "yarn"
+    },
     "version": {
       "allowBranch": "master",
       "message": "chore: tag and release %s [ci skip]"
