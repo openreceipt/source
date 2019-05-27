@@ -1,7 +1,7 @@
 {
   "name": "@openreceipt/core",
   "description": "Core engine for OpenReceipt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@endemolshinegroup/cosmiconfig-typescript-loader": "^1",
-    "@openreceipt/countries": "^0.1.0",
+    "@openreceipt/countries": "^0.1.1",
     "@openreceipt/currency": "^0.1.0",
     "@openreceipt/dom": "^0.1.0",
     "@openreceipt/events": "^0.1.0",

@@ -1,7 +1,7 @@
 {
   "name": "@openreceipt/plugin-zooplus-uk",
   "description": "Zooplus UK plugin for OpenReceipt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
-    "@openreceipt/core": "^0.1.0",
+    "@openreceipt/core": "^0.1.1",
     "@openreceipt/dom": "^0.1.0",
     "@openreceipt/mail": "^0.1.0",
     "@types/jest": "^24",
