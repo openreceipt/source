@@ -27,12 +27,6 @@ env:
 before_install:
   - npm i -g yarn
 
-install:
-  - git clone https://${GH_TOKEN}@github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
-  - cd $TRAVIS_REPO_SLUG
-  - yarn
-  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-
 script:
   - yarn lint
   - yarn test
@@ -52,5 +46,10 @@ jobs:
         - codecov
     - stage: release
       if: branch = master AND type != pull_request
+      install:
+        - git clone https://${GH_TOKEN}@github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
+        - cd $TRAVIS_REPO_SLUG
+        - yarn
+        - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       after_success:
         - yarn release
