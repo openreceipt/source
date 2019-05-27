@@ -1,0 +1,6 @@
+!dist
+src
+.lintstagedrc.yml
+*.config.js
+tsconfig.*
+tslint.json
