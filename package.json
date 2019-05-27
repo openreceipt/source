@@ -23,7 +23,7 @@
     "build": "rimraf dist/ && tsc",
     "lint": "yarn workspaces run lint",
     "test": "CI=true yarn workspaces run test",
-    "semantic-release": "semantic-release"
+    "release": "lerna publish --conventional-commits --yes"
   },
   "dependencies": {
     "tslib": "^1"
@@ -32,13 +32,10 @@
     "@commitlint/cli": "^7",
     "@commitlint/config-conventional": "^7",
     "@endemolshinegroup/cz-github": "^1",
-    "@semantic-release/changelog": "^3",
-    "@semantic-release/git": "^7",
     "commitizen": "^3",
     "husky": "^2",
     "lerna": "^3",
-    "lint-staged": "^8",
-    "semantic-release": "^15"
+    "lint-staged": "^8"
   },
   "workspaces": {
     "packages": [

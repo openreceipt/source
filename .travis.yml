@@ -5,26 +5,37 @@ cache: yarn
 node_js:
   - 8
   - 10
-
-before_install:
-  - npm i -g yarn
-
-script:
-  - yarn lint
-  - yarn test
+  - 12
 
 # Environment variables marked with `secure` should be securely encrypted as described at:
 # https://docs.travis-ci.com/user/environment-variables/#encrypting-environment-variables
 
+branches:
+  except:
+    - /^v(\d\.?)+/
+
 env:
   global:
-#    - secure: OOgxQ2Jtzef3Be3y/QadYav/gs4arLJoVpQCEneomkA7K+QGVDQYuhiHmGBmsh5tfBQVZeKftN1TDVkgO2XArTBz7J62UTkNSiX7ezhGXI3N+nfExx4FApZD1OeM8kCn2v5WRlDt0tUT6gGqw5MjzLNWgECIpA3BAhEvfOqYzpYyeJVswNGhAMd0WbxkGR0DpnQqT/YAQypz6Yh94TE7OOicxh94u7ztx5kw/VGSqweiO4/W5w0k4ch4TW5MSEoewk9It7TUUtYrR2LKGWevCMY7p7ZGoBwfNdXjLJlqlXftjxNrz1xo2YNp6O2Vdu1+tUDxnaTPJ/J6ipQSL+9fkNlAjNJmsHdjPdX8RyoU75YHbXpiacQhOCmskZ7CV3W/NpjvQdqI+eXsss5Pdtem4ETjwWw20V/qlQe7/qWadE+DzOXp+PZLNteYjxMvyCBWNTK177/1Wqw5R3fk5vA8iD9fMNwS7Izx2nOkPEPNxQFY+qmAyb5pHFYCvp0TDaK9NVBv5Bl21j1qM5D1X1fCju1ZKi/etadAvU8bOs/h8IfDpauT+6cvgeDGh4hh2QYi61q99YjAdHvveSfnqsAlAHqtDPQbghk/ZVCgwFbjnS1bps7HYl1EqHfgyvrmAvDPcZu3chaV9c6W8v/sTGsV8INWLiSjdQbUVoScJZTZmdA=
-#    - secure: rbzdeJBokhVqiW0dpRrFmDSc3lYbXOgXeH1oVfvovN0KgCGYSDUlEqWqS3uizwB1xaY+F0nv797iI+sFxQBEzSxVU2ac6AbYTbRRuA7VYfxfp5HSIYcsDNnBDt8Qc75JLnpvZjjzXc4nCHaoW0Huhv+i8ccJy6GUN8L+bz8ddSGuq6Ae4YUVpVBJ8f2LDK6HXqQ5TKGb65TaXzmd/6o40deW7RzI2WaOh+jT50lUmTj5WfsWJYpx5AD3fcCE6BAxcEefE1qUCaFOejn6kLkORpVkv8XbNgk/bvdORJB7SKg3XWQUYgrBI0yTP17b+m53qG6nC2AU9hSFyXrlrgCveQ/I4vxE25LKyVpZ33LIyzQv/ft04LwN3CP+SlKVb7drBMZHkh/1hLBMlxDWGYZSYPDvq5304PhIpqaLAMWdopMRPN/FRn+EZKyjZDD2+RUWTQnzJ4B/fruWeqOi+rZqpip4JNHYMfXVkwQUPhi1WCeNpWxd/hnODB5Y43Uj9ppJx+CxXoV9n9cOw8LobEJGaGudI8nU5lwuSqhckgKAIugOWr8zCYsHPLdMvTIfpE238ZCYA6NAuCyKLdCFWx8AlrA/Q4mdwa37y43fcXBkf8no91wxPHXkLSFyhvTNc+W/9p0UBo6C/1XLDCTtvclfa+tHYXbKQm0/WGNZhg8didU=
-#    - secure: Uy3rRZqi11CzX+RJX6tbGeRxJ3gjcw4aBoFtqrtEOd/l3ryVdbEH1Yn6vTRK4yU/jDYjsYv44V2FXsdw25BuLnVtJ5MtQFgjhe3EppLd5DBQIYuIEIHU44nm6DLmlNPE9ZySjxq6nhqJgfY9GsAJZcYH+Y52wh+ajURMfVVVvMcTy0BUJPwwyQtC8YyOT0vaHy9rMAr05HI4UjK/Wko+Gew+kHjwk/8WDGLbiiHcN6XzGrQoMeLUxmlROehjuVcnTpwbWLRwDQxn2rGytLF2c7bxdhB1F3mbhXi99Z0dRZrMOYkewVXzlbb6m0kk3zcXUu61czoTXy8o4v8JA9yMoTv4eTxmsniQoMIz8xoeol8S9L32g9ooWhFVLKXUgiaD+Xi7dIX0EnPv3zlKFnlCfWqaEVmJv1qRM3pEZ9yUqzFP6tPGTVtleuvbEcC01kgBgQWnPGS4jM91iuS0p4wwuQELpwKKecoMx0nLceMHeUVR8REvjyk+wQQG5aR6M4sKTTTlGOkY9NFdsQ6ijPZaIZOBu2eECwZLA2Sn+9b668T01A3ZwqKyr2rBehpoz4ndcrgxJE57gOtFiOJczyrdHo0KBobLctE2+i2KyDZrVXchCDEAsI74qCxdBuRQWotsJ94pG8gRfuWtCSyIYOc8p1qdgmdU7G+uTW1Axq6SaMI=
-    - export GIT_AUTHOR_NAME="release-bot"
-    - export GIT_AUTHOR_EMAIL="bot@openreceipt.com"
-    - export GIT_COMMITTER_NAME="release-bot"
-    - export GIT_COMMITTER_EMAIL="bot@openreceipt.com"
+    - secure: Kjjnnzwbdi2OVQxSRDWhh9I4eHHdnWh7Ap9heLIS5Md/Ruy6GA2uueLUuJMVZvHTXhNje724hZGQaBqzYdUykrk3uabL5EE/1U3Gfl1SEP+rVhrtY7IEn6OW/u3h8xs+j48V8mVNcf9Vb5Qt4LN2vzsnj24hMvCeBD5nZweDEPMvZWWV12sNQE6Y9MS7llRBndFzwDyqvXjqjxNQreCmvzqx8rMfQTAxKeVb2R2rpky5h+P/yoXhhKRmGTq/J88G4jRQU6zjXD4gSOhoCX1DiXga92GUlZBRNflig8kdWH7JVd0encjDSTFtG1P7f9RErLfmknHDLnp7EIMxxXk9iB49vcK+y9xz+T/kDzPArSxkIbvThM+Mzykm/gh8i4itZ1u6aIbrEFnU64LhcGwePb0nxJYRBRinkjAZ/nJg3na5YFL/HoXYhJJpIMbx9z8SUZDl4idm4BOeCbv3vHjtYUZaOY2epa89Ug26Q56FktUIWYu3jZklCQqUKkSuhAPFKmbjgvmu6x+i3pv9QGi5laX5H6ppV8t6AKE5XVuE6oh/YdyzpGxMgub4tL5zhchTERnJn1jirgyrj1CpkQ9ZJ+7/OssXReC2jNCMe11yWO4sxGZ4soN1BJl+CH5qHrFIlbkXS881w7AMw1XorffueoaoTEtLxLlUvFyA8djp5GU=
+    - secure: lNunFL+lQKh0MzE2GN+hVzGTjxH6sQUprm0LwQZRTWtL4reFL28NHSUctt2xqD4mqZw/Hi0eOic7ngK8XcHBSpWVc9UiVbs0PajvhDECavE41aExSUxH28Kqr1YAMlJy3sJGgA4gFZ6M2BuucqFsb0AYUBPXfpHkflAnpX3Sr3ksVREcPWr2WIqsW7tKK4IaKnHms6nM4yYnHVbCLhomTwL+iBQCnzRjTBkMcVMJpHI1zBlwJCm470OippX86SF6pGOvfEU0WviYvNBawCeq5ULd4z/KiQdjPOqAFi2D0uJDLO3Ze1rzXp6lJPGTWk6xaHYsT9Kx+yOFG0+kjP6BS1hs4VnkxloXgExNklVnMOken5VjhTTxsfG6UDkgVh5W9SgBOwxog23AhFSr2jxzmXSFOTcpbarPSFJyH3uTL7DfeKnEU2xMdZetTRQxitv/9yKn8YWf5SlXtYkQ411lrSGgZk1Gxzd20esXnml5fAm+2ZLVAPAbIYHKr1sNF8ACB+M72H7b7BxLO+6MQ/TNY/SHXJEed/3Qx2UO55B6U/kgqxmZuKBqpsM6RVdUU4BjIicI3GaW5MXrAcsQL1mEHia5fQdMI+SnW7MePSAkf/X4hfe3EEQe1auzC7e8qs3++eFGiXWEMoRqgZSulQWIfW9Jm8BtRsmYMZFsvHcLUAU=
+    - secure: DWlOEQHYQkh3GFqms5Qp4JokSyp+Rs2EEDklCOdTKGaoVYrSmrNLpXNdtG3vdhhBDL8IUxyh/CcUEqSDeY19qvUSj7pGt6cPhRpx5XI6htm117WhxD6PK7y48DIz9JOckKiPwewWSqdO27m48BUY6E5TezXqBsNZO5tFKp1kb33WRiC+xVgNSEa9JDLKdU7lJWnlfcg/W4JJzFqwBSpuvjVw86F4x1QoqvlcHo4WwVcntCp8DkhlKsGvyH44LQY55BYAgs0s6gIeKOUbE8u4p143amti2hRzTYUUMbtg+S92vv2kJSxfS7fk92evpgjDAR76XGLUHFDnjpPKom0a21JkNc73jeRljH39OIj+tS3JNa4wUctfO3j6nkd3417exsNFFKjnXpgD3UUwWXzKfCvtnrz/upNuZpix3eP0Rtz1iF33u+QigqxCbcMLJUjJQN6OJp5ewWm5b7dGvqM6syGQhDiiB+ouMACUZ1+ohtFHwr3zazrjMBe+yVJzM8MYE1WMtL1ZRJXQ2f/hWrV3kWKRnbTTmWLQXzIi4qNTtA5FuAHPAWP6UD0+weJvZA/I55rFkLhIhSODFd/bCaHiY8S5HwBza5UQwaYcP3K2OnGhO9k+IuLfNuQeZDA9aQsLg4f8q/tDGRUc3ZNhIxUs8awd124s/BRGH8gsWuwLls4=
+    - export GIT_AUTHOR_NAME="OpenReceipt Bot"
+    - export GIT_AUTHOR_EMAIL="bot@openreceipt.dev"
+    - export GIT_COMMITTER_NAME="OpenReceipt Bot"
+    - export GIT_COMMITTER_EMAIL="bot@openreceipt.dev"
+
+before_install:
+  - npm i -g yarn
+
+install:
+  - git clone https://${GH_TOKEN}@github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
+  - cd $TRAVIS_REPO_SLUG
+  - yarn
+  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+
+script:
+  - yarn lint
+  - yarn test
 
 jobs:
   include:
@@ -39,12 +50,7 @@ jobs:
       after_success:
         - yarn global add codecov
         - codecov
-#    - stage: release
-#      if: branch = master AND type != pull_request
-#      after_success:
-#        - yarn semantic-release
-#        - git clone https://${GH_TOKEN}@github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
-#        - cd $TRAVIS_REPO_SLUG
-#        - git fetch --all
-#        - git merge origin/master
-#        - git push
+    - stage: release
+      if: branch = master AND type != pull_request
+      after_success:
+        - yarn release
