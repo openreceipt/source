@@ -27,7 +27,7 @@
     "lint": "tslint -p tsconfig.json -t codeFrame 'src/**/*.ts' -e 'src/**/*.spec.ts'",
     "pretest": "rimraf coverage/",
     "test": "echo 'No tests for this package'",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn cleanup && yarn build"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",

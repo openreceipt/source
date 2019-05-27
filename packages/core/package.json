@@ -26,7 +26,8 @@
     "precommit": "lint-staged",
     "lint": "tslint -p tsconfig.json -t codeFrame 'src/**/*.ts' -e 'src/**/*.spec.ts'",
     "pretest": "rimraf coverage/",
-    "test": "jest --no-cache --coverage"
+    "test": "jest --no-cache --coverage",
+    "prepublishOnly": "yarn cleanup && yarn build"
   },
   "dependencies": {
     "@endemolshinegroup/cosmiconfig-typescript-loader": "^1",

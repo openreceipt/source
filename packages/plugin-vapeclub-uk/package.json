@@ -27,7 +27,7 @@
     "lint": "tslint -p tsconfig.json -t codeFrame 'src/**/*.ts' -e 'src/**/*.spec.ts'",
     "pretest": "rimraf coverage/",
     "test": "echo 'No tests for this package'",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn cleanup && yarn build"
   },
   "peerDependencies": {
     "@openreceipt/core": "^0.0.1"
