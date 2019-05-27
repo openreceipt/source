@@ -2,7 +2,7 @@
   "command": {
     "version": {
       "allowBranch": "master",
-      "message": "chore: tag and release %s"
+      "message": "chore: tag and release %s [ci skip]"
     }
   },
   "npmClient": "yarn",
