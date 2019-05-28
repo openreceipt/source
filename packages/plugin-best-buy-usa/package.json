@@ -1,6 +1,6 @@
 {
   "name": "@openreceipt/plugin-best-buy-usa",
-  "description": "Best Buy plugin for OpenReceipt",
+  "description": "Best Buy USA plugin for OpenReceipt",
   "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
