@@ -5,6 +5,12 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "openreceipt",
+    "openreceipt-plugin",
+    "best-buy-usa",
+    "typescript"
+  ],
   "author": {
     "name": "OpenReceipt",
     "url": "https://github.com/openreceipt"
