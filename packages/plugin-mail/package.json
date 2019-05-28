@@ -36,7 +36,7 @@
     "prepublishOnly": "yarn cleanup && yarn build"
   },
   "peerDependencies": {
-    "@openreceipt/core": "^0.0.1"
+    "@openreceipt/core": ">= 0.1.0"
   },
   "dependencies": {
     "debug": "^4",
