@@ -5,6 +5,11 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "openreceipt",
+    "dom",
+    "typescript"
+  ],
   "author": {
     "name": "OpenReceipt",
     "url": "https://github.com/openreceipt"
