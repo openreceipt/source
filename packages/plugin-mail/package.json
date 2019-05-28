@@ -1,7 +1,7 @@
 {
   "name": "@openreceipt/plugin-mail",
   "description": "Mail plugin for OpenReceipt",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,7 +46,7 @@
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
     "@endemolshinegroup/tslint-config": "^1",
-    "@openreceipt/core": "^0.1.1",
+    "@openreceipt/core": "^0.1.2",
     "@types/debug": "^4",
     "@types/jest": "^24",
     "@types/mailparser": "^2",
