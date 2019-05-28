@@ -1,13 +1,22 @@
 /**
  * Checks if a given number is between two other numbers
- * @param x
- * @param min
- * @param max
+ * @param {number} x
+ * @param {number} min
+ * @param {number} max
+ * @returns {boolean}
  */
 export const between = (x: number, min: number, max: number) => {
   return (x - min) * (x - max) <= 0;
 };
 
+/**
+ * Extracts a single occurrence of a string between a given `prefix` and
+ * `suffix`
+ * @param {string} text
+ * @param {string} prefix
+ * @param {string} suffix
+ * @returns {string}
+ */
 export const extract = (text: string, prefix: string, suffix: string) => {
   let str = text;
   const startIndex = str.indexOf(prefix);
@@ -30,6 +39,14 @@ export const extract = (text: string, prefix: string, suffix: string) => {
   return str;
 };
 
+/**
+ * Extracts multiple occurrences of a string between a given `prefix` and
+ * `suffix`
+ * @param {string} text
+ * @param {string} prefix
+ * @param {string} suffix
+ * @returns {string}
+ */
 export const extractAll = (text: string, prefix: string, suffix: string) => {
   const innerExtract = (
     innerText: string,
