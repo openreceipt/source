@@ -1,7 +1,7 @@
 {
   "name": "@openreceipt/cli",
   "description": "CLI package for OpenReceipt",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "bin": {
     "openreceipt": "bin/index.js"
