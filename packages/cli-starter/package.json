@@ -2,7 +2,7 @@
   "name": "@openreceipt/cli-starter",
   "description": "CLI starter project for OpenReceipt",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.2.0",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,14 +29,14 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "@openreceipt/cli": "^0.1.2",
-    "@openreceipt/plugin-best-buy-usa": "^0.1.2",
-    "@openreceipt/plugin-console": "^0.1.2",
-    "@openreceipt/plugin-mail": "^0.1.2",
-    "@openreceipt/plugin-steam": "^0.0.1",
-    "@openreceipt/plugin-ubereats-uk": "^0.1.2",
-    "@openreceipt/plugin-vapeclub-uk": "^0.1.2",
-    "@openreceipt/plugin-zooplus-uk": "^0.1.2",
+    "@openreceipt/cli": "^0.2.0",
+    "@openreceipt/plugin-best-buy-usa": "^0.2.0",
+    "@openreceipt/plugin-console": "^0.2.0",
+    "@openreceipt/plugin-mail": "^0.2.0",
+    "@openreceipt/plugin-steam": "^0.2.0",
+    "@openreceipt/plugin-ubereats-uk": "^0.2.0",
+    "@openreceipt/plugin-vapeclub-uk": "^0.2.0",
+    "@openreceipt/plugin-zooplus-uk": "^0.2.0",
     "tslib": "^1"
   },
   "devDependencies": {
