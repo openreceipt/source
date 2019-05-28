@@ -43,7 +43,8 @@
     "@openreceipt/dom": "^0.2.0",
     "@openreceipt/mail": "^0.2.0",
     "@openreceipt/plugin-mail": "^0.2.0",
-    "tslib": "^1"
+    "tslib": "^1",
+    "yargs": "^13"
   },
   "devDependencies": {
     "@endemolshinegroup/prettier-config": "^1",
@@ -53,6 +54,7 @@
     "@types/lodash.get": "^4",
     "@types/lodash.has": "^4",
     "@types/node": "8.*",
+    "@types/yargs": "^13",
     "jest": "^24",
     "lint-staged": "^8",
     "prettier": "^1",
