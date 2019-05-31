@@ -1,7 +1,7 @@
 {
   "name": "@openreceipt/cli",
   "description": "CLI package for OpenReceipt",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "license": "MIT",
   "bin": {
     "openreceipt": "bin/index.js"
@@ -39,10 +39,10 @@
     "prepublishOnly": "yarn cleanup && yarn build"
   },
   "dependencies": {
-    "@openreceipt/core": "^0.2.0",
-    "@openreceipt/dom": "^0.2.0",
-    "@openreceipt/mail": "^0.2.0",
-    "@openreceipt/plugin-mail": "^0.2.0",
+    "@openreceipt/core": "^0.3.0",
+    "@openreceipt/dom": "^0.3.0",
+    "@openreceipt/mail": "^0.3.0",
+    "@openreceipt/plugin-mail": "^0.3.0",
     "tslib": "^1",
     "yargs": "^13"
   },
